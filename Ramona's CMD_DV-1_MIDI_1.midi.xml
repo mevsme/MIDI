@@ -1,0 +1,1262 @@
+<?xml version='1.0' encoding='utf-8'?>
+<MixxxControllerPreset mixxxVersion="" schemaVersion="1">
+    <info>
+        <name>Behringer CMD DV-1</name>
+        <author>mtou</author>
+        <description>Controller mapping for Behringer CMD DV-1</description>
+        <wiki>todo</wiki>
+    </info>
+    <controller id="CMD">
+        <scriptfiles>
+            <file functionprefix="CMDDV1" filename="CMD_DV-1_MIDI_1.scripts.js"/>
+        </scriptfiles>
+        <controls>
+
+            <control>
+                <group>[Slice]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x54</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Erase]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x55</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Store]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x56</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Phrase]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x57</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
+            <control>
+                <group>[Slice]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x54</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Erase]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x55</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Store]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x56</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Phrase]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x57</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
+            <control>
+                <group>[BeatLoop1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x50</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[BeatLoop2]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x51</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[BeatLoop3]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x52</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[BeatLoop4]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x53</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
+            <control>
+                <group>[BeatLoop1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x50</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[BeatLoop2]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x51</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[BeatLoop3]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x52</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[BeatLoop4]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x53</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
+            <control>
+                <group>FocusC</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x42</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x19</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x2C</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x16</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit3_Effect1]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x1E</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x2E</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>FocusB</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x41</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x18</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x2B</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit4_Effect1]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x33</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x15</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit3_Effect1]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x1D</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>FocusD</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x43</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x2D</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x17</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>FocusA</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x40</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x2A</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit4_Effect1]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x32</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x14</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit3]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x1C</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>FocusC</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x42</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x2C</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x16</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x29</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit4_Effect1]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x31</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit2_Effect1]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x1B</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>FocusB</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x41</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x2B</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x15</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit4]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x30</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x28</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit2_Effect1]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x1A</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>FocusA</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x40</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x2A</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x14</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x27</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit3_Effect1]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x2F</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit2_Effect1]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x19</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x29</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x26</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit3_Effect1]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x2E</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit2]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x18</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x28</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[QuickEffectRack1_[Channel1]]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x43</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x25</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit3_Effect1]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x2D</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1_Effect1]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x17</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x27</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[QuickEffectRack1_[Channel1]]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x42</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x24</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit3]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x2C</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1_Effect1]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x16</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x26</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[QuickEffectRack1_[Channel1]]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x41</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit2_Effect1]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x2B</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x23</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1_Effect1]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x15</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x25</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[QuickEffectRack1_[Channel1]]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x40</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit2_Effect1]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x2A</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x22</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x14</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x24</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x21</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit2_Effect1]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x29</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x23</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x20</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit2]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x28</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x22</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x1F</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1_Effect1]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x27</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x21</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x1E</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1_Effect1]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x26</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x20</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x33</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x1D</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1_Effect1]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x25</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x1F</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x32</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x1C</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x24</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x1E</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x31</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x1B</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit4_Effect1]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x23</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x33</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x1D</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x30</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x1A</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit4_Effect1]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x22</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x32</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x1C</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x2F</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x19</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit4_Effect1]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x21</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x31</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x1B</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x2E</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x18</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit4]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x20</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x30</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>FocusD</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x43</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x1A</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x2D</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_off</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x86</status>
+                <midino>0x17</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit3_Effect1]</group>
+                <key>CMDDV1.on_knob_change</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0xB6</status>
+                <midino>0x1F</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EffectRack1_EffectUnit1]</group>
+                <key>CMDDV1.on_button_on</key>
+                <description>MIDI Learned from 250 messages.</description>
+                <status>0x96</status>
+                <midino>0x2F</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+        </controls>
+        <outputs/>
+    </controller>
+</MixxxControllerPreset>
