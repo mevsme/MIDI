@@ -1,7 +1,7 @@
 # Behringer CMD Series: PL-1 MM-1 DV-1 DC-1
 
-DV & DC are not yet ready.
-PL and MM works fine but not polished.
+DV & DC are not yet ready.  
+PL and MM works fine but not polished.  
 
 ## MM-1 v.1 (mine)
 [WIKI](https://mixxx.org/wiki/doku.php/behringer_cmd_mm-1)  
@@ -27,7 +27,13 @@ Tiger's CMD_DC-1_MIDI_1.midi.xml
 
 ## DV-1 Tiger's
 [Forums](https://mixxx.org/forums/viewtopic.php?f=7&t=7910)  
+Tiger's CMD_DV-1_MIDI_1.midi.xml  
+Tiger's Behringer-CMD-DV1.scripts.js  
 
 ## DV-1 Ramona's
 Ramona's CMD_DV-1_MIDI_1.midi.xml  
 Ramona's CMD_DV-1_MIDI_1.scripts.js  
+
+## MM-1 Ramona's
+[Forums](https://mixxx.org/forums/viewtopic.php?f=7&t=6201)  
+Ramona's CMD_MM-1_MIDI_1.midi.xml  
