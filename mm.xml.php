@@ -1,4 +1,8 @@
-<?xml version='1.0' encoding='utf-8'?><MixxxControllerPreset mixxxVersion="" schemaVersion="1">
+<?php 
+// php mm.xml.php > "CMD_MM-1_MIDI_1.midi.xml"
+
+echo "<?xml version='1.0' encoding='utf-8'?>"; ?>
+<MixxxControllerPreset mixxxVersion="" schemaVersion="1">
     <info>
         <name>Behringer CMD MM-1</name>
         <author>SOUND PEAKS</author>
@@ -54,12 +58,13 @@
                     <Script-Binding/>
                 </options>
             </control>
-            <control>
+            <?php $z = 6; for ($i = 1; $i <= 4; $i++, $z++) { ?>
+<control>
                 <group>[Script]</group>
                 <key>CMDMM.fader</key>
                 <description>Low EQ</description>
                 <status>0xB4</status>
-                <midino>0x0e</midino>
+                <midino><?=sprintf("0x%02x", ($z + 8))?></midino>
                 <options>
                     <script-binding/>
                 </options>
@@ -69,7 +74,7 @@
                 <key>CMDMM.fader</key>
                 <description>Mid EQ</description>
                 <status>0xB4</status>
-                <midino>0x0a</midino>
+                <midino><?=sprintf("0x%02x", $z + 4)?></midino>
                 <options>
                     <script-binding/>
                 </options>
@@ -79,7 +84,7 @@
                 <key>CMDMM.fader</key>
                 <description>Hi EQ</description>
                 <status>0xB4</status>
-                <midino>0x06</midino>
+                <midino><?=sprintf("0x%02x", $z)?></midino>
                 <options>
                     <script-binding/>
                 </options>
@@ -89,138 +94,20 @@
                 <key>CMDMM.fader</key>
                 <description>Rotary 4</description>
                 <status>0xB4</status>
-                <midino>0x12</midino>
+                <midino><?=sprintf("0x%02x", $z + 12)?></midino>
                 <options>
                     <script-binding/>
                 </options>
             </control>
-           <control>
-                <group>[Script]</group>
-                <key>CMDMM.fader</key>
-                <description>Low EQ</description>
-                <status>0xB4</status>
-                <midino>0x0f</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-            <control>
-                <group>[Script]</group>
-                <key>CMDMM.fader</key>
-                <description>Mid EQ</description>
-                <status>0xB4</status>
-                <midino>0x0b</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-            <control>
-                <group>[Script]</group>
-                <key>CMDMM.fader</key>
-                <description>Hi EQ</description>
-                <status>0xB4</status>
-                <midino>0x07</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-            <control>
-                <group>[Script]</group>
-                <key>CMDMM.fader</key>
-                <description>Rotary 4</description>
-                <status>0xB4</status>
-                <midino>0x13</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-           <control>
-                <group>[Script]</group>
-                <key>CMDMM.fader</key>
-                <description>Low EQ</description>
-                <status>0xB4</status>
-                <midino>0x10</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-            <control>
-                <group>[Script]</group>
-                <key>CMDMM.fader</key>
-                <description>Mid EQ</description>
-                <status>0xB4</status>
-                <midino>0x0c</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-            <control>
-                <group>[Script]</group>
-                <key>CMDMM.fader</key>
-                <description>Hi EQ</description>
-                <status>0xB4</status>
-                <midino>0x08</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-            <control>
-                <group>[Script]</group>
-                <key>CMDMM.fader</key>
-                <description>Rotary 4</description>
-                <status>0xB4</status>
-                <midino>0x14</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-           <control>
-                <group>[Script]</group>
-                <key>CMDMM.fader</key>
-                <description>Low EQ</description>
-                <status>0xB4</status>
-                <midino>0x11</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-            <control>
-                <group>[Script]</group>
-                <key>CMDMM.fader</key>
-                <description>Mid EQ</description>
-                <status>0xB4</status>
-                <midino>0x0d</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-            <control>
-                <group>[Script]</group>
-                <key>CMDMM.fader</key>
-                <description>Hi EQ</description>
-                <status>0xB4</status>
-                <midino>0x09</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-            <control>
-                <group>[Script]</group>
-                <key>CMDMM.fader</key>
-                <description>Rotary 4</description>
-                <status>0xB4</status>
-                <midino>0x15</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-                       
+           <?php } ?>
+            
             
             <!-- 1&2 buttons -->
-            <control>
+            <?php $z = 0x84; for ($i = 0; $i <= 1; $i++) { ?>
+<control>
                 <group>[Script]</group>
                 <key>CMDMM.button</key>
-                <status>0x84</status>
+                <status><?=sprintf("0x%02x", $z); ?></status>
                 <midino>0x13</midino>
                 <options>
                     <script-binding/>
@@ -229,7 +116,7 @@
             <control>
                 <group>[Script]</group>
                 <key>CMDMM.button</key>
-                <status>0x84</status>
+                <status><?=sprintf("0x%02x", $z); ?></status>
                 <midino>0x14</midino>
                 <options>
                     <script-binding/>
@@ -238,7 +125,7 @@
             <control>
                 <group>[Script]</group>
                 <key>CMDMM.button</key>
-                <status>0x84</status>
+                <status><?=sprintf("0x%02x", $z); ?></status>
                 <midino>0x17</midino>
                 <options>
                     <script-binding/>
@@ -247,7 +134,7 @@
             <control>
                 <group>[Script]</group>
                 <key>CMDMM.button</key>
-                <status>0x84</status>
+                <status><?=sprintf("0x%02x", $z); ?></status>
                 <midino>0x18</midino>
                 <options>
                     <script-binding/>
@@ -256,7 +143,7 @@
             <control>
                 <group>[Script]</group>
                 <key>CMDMM.button</key>
-                <status>0x84</status>
+                <status><?=sprintf("0x%02x", $z); ?></status>
                 <midino>0x1B</midino>
                 <options>
                     <script-binding/>
@@ -265,7 +152,7 @@
             <control>
                 <group>[Script]</group>
                 <key>CMDMM.button</key>
-                <status>0x84</status>
+                <status><?=sprintf("0x%02x", $z); ?></status>
                 <midino>0x1C</midino>
                 <options>
                     <script-binding/>
@@ -274,7 +161,7 @@
             <control>
                 <group>[Script]</group>
                 <key>CMDMM.button</key>
-                <status>0x84</status>
+                <status><?=sprintf("0x%02x", $z); ?></status>
                 <midino>0x1F</midino>
                 <options>
                     <script-binding/>
@@ -283,85 +170,14 @@
             <control>
                 <group>[Script]</group>
                 <key>CMDMM.button</key>
-                <status>0x84</status>
+                <status><?=sprintf("0x%02x", $z); ?></status>
                 <midino>0x20</midino>
                 <options>
                     <script-binding/>
                 </options>
             </control>
-            <control>
-                <group>[Script]</group>
-                <key>CMDMM.button</key>
-                <status>0x94</status>
-                <midino>0x13</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-            <control>
-                <group>[Script]</group>
-                <key>CMDMM.button</key>
-                <status>0x94</status>
-                <midino>0x14</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-            <control>
-                <group>[Script]</group>
-                <key>CMDMM.button</key>
-                <status>0x94</status>
-                <midino>0x17</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-            <control>
-                <group>[Script]</group>
-                <key>CMDMM.button</key>
-                <status>0x94</status>
-                <midino>0x18</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-            <control>
-                <group>[Script]</group>
-                <key>CMDMM.button</key>
-                <status>0x94</status>
-                <midino>0x1B</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-            <control>
-                <group>[Script]</group>
-                <key>CMDMM.button</key>
-                <status>0x94</status>
-                <midino>0x1C</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-            <control>
-                <group>[Script]</group>
-                <key>CMDMM.button</key>
-                <status>0x94</status>
-                <midino>0x1F</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-            <control>
-                <group>[Script]</group>
-                <key>CMDMM.button</key>
-                <status>0x94</status>
-                <midino>0x20</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-                        
+            <?php $z = 0x94; } ?>
+            
             
             <!-- PLAYLIST -->
             <control>
