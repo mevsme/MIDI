@@ -11,8 +11,8 @@ Check the tutorials on YouTube (comming soon)
 
 ## PL-1
 [WIKI](https://mixxx.org/wiki/doku.php/behringer_cmd_pl-1) - not ready yet  
-[Behringer-CMD-MM-1-scripts.js](https://raw.githubusercontent.com/mevsme/MIDI/master/Behringer-CMD-PL-1-scripts.js)  
-[Behringer CMD MM-1.midi.xml](https://raw.githubusercontent.com/mevsme/MIDI/master/Behringer%20CMD%20PL-1.midi.xml)
+[Behringer-CMD-PL-1-scripts.js](https://raw.githubusercontent.com/mevsme/MIDI/master/Behringer-CMD-PL-1-scripts.js)  
+[Behringer CMD PL-1.midi.xml](https://raw.githubusercontent.com/mevsme/MIDI/master/Behringer%20CMD%20PL-1.midi.xml)
 
 ## DC-1
 [WIKI](https://mixxx.org/wiki/doku.php/behringer_cmd_dc-1-sp) - not ready yet  
