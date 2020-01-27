@@ -13,39 +13,6 @@ var CMDPL = new Object();
 //винести фактори в глобальні
 //пофіксити прикол з джогом
 
-CMDPL.g = {
-    'channels'        : ['[Channel1]', '[Channel2]', '[Channel3]', '[Channel4]'],
-    'cGroup'  : '[Channel1]',
-    'shiftStatus'     : [false, false, false, false],
-    'rotary_led': [
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0]
-    ],
-    'rotary_circle': [
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0]
-    ],
-    //'scratch_button': [false, false, false, false],
-    //'sliderValue'   : [62, 62, 62, 62],
-    'invertJogs'    : true,
-};
-
-
-
-
-//CMDPL.g.invertJogs
 CMDPL.init = function (id) {
 	
 	CMDPL.shift = [false, false, false, false];
@@ -65,7 +32,12 @@ CMDPL.init = function (id) {
 	CMDPL.alpha = 1/2;
 	CMDPL.beta  = CMDPL.alpha/32;
 	
+	CMDPL.invertJogs = false;
 	
+	CMDPL.specialMODE = [false, false, false, false];
+	
+	CMDPL.rroundLED = [[0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08], [0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08], [0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08], [0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08]]; // Round leds
+	//CMDPL.rmidLED   = [[0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]]; // Middle led
 	
     for (var c = 0; c <= 3; c++) {
         for (var i = 1; i <= 256; i++) {
@@ -79,13 +51,13 @@ CMDPL.init = function (id) {
         //midi.sendShortMsg(0xB1, 0x03, 0x08);
     }
       
-    //midi.sendShortMsg(0xB0, 0x04, 0x08); midi.sendShortMsg(0x90, 0x00, 0x01); // Key change init
-    //midi.sendShortMsg(0xB0, 0x07, 0x08); midi.sendShortMsg(0x90, 0x04, 0x01); // Super1 change init
+    midi.sendShortMsg(0xB0, 0x01, CMDPL.rroundLED[CMDPL.getChannelN(CMDPL.cGroup)][1]); // Key default round
+    midi.sendShortMsg(0xB0, 0x07, CMDPL.rroundLED[CMDPL.getChannelN(CMDPL.cGroup)][7]); // BPM round
     
 	// Connect no-channel Rotaries
-	engine.makeConnection('[QuickEffectRack1_' + CMDPL.cGroup + ']', 'super1', CMDPL.super1red).trigger(); 
-	engine.makeConnection(CMDPL.cGroup, 'loop_enabled', CMDPL.beatszch).trigger(); 
-	engine.makeConnection(CMDPL.cGroup, 'quantize', CMDPL.qntz).trigger(); 
+	CMDPL.supr1led    = engine.makeConnection('[QuickEffectRack1_' + CMDPL.cGroup + ']', 'super1', CMDPL.super1red); CMDPL.supr1led.trigger(); 
+	CMDPL.loopsizeled = engine.makeConnection(CMDPL.cGroup, 'loop_enabled', CMDPL.beatszch); CMDPL.loopsizeled.trigger(); 
+	CMDPL.qntzled     = engine.makeConnection(CMDPL.cGroup, 'quantize', CMDPL.qntz); CMDPL.qntzled.trigger(); 
 
 	
 	
@@ -105,11 +77,13 @@ CMDPL.init = function (id) {
 		engine.makeConnection(CMDPL.chList[i], 'hotcue_3_enabled', function (value, group, control) {midi.sendShortMsg(0x90 + CMDPL.getChannelN(group), 0x12, value);}).trigger();
 		engine.makeConnection(CMDPL.chList[i], 'hotcue_4_enabled', function (value, group, control) {midi.sendShortMsg(0x90 + CMDPL.getChannelN(group), 0x13, value);}).trigger();
 		
+		engine.makeConnection(CMDPL.chList[i], 'quantize', function (value, group, control) {midi.sendShortMsg(0x90 + CMDPL.getChannelN(group), 0x17, value);}).trigger();
+		
 		engine.makeConnection(CMDPL.chList[i], 'loop_enabled',        function (value, group, control) {midi.sendShortMsg(0x90 + CMDPL.getChannelN(group), 0x14, value);}).trigger();
 		engine.makeConnection(CMDPL.chList[i], 'loop_start_position', function (value, group, control) { value = value >= 0 ? 0x01 : 0x00; midi.sendShortMsg(0x90 + CMDPL.getChannelN(group), 0x15, value);}).trigger();
 		engine.makeConnection(CMDPL.chList[i], 'loop_end_position',   function (value, group, control) { value = value >= 0 ? 0x01 : 0x00; midi.sendShortMsg(0x90 + CMDPL.getChannelN(group), 0x16, value);}).trigger();
         
-		engine.makeConnection(CMDPL.chList[i], 'slip_enabled',        function (value, group, control) {midi.sendShortMsg(0x90 + CMDPL.getChannelN(group), 0x17, value);}).trigger();
+		engine.makeConnection(CMDPL.chList[i], 'slip_enabled',        function (value, group, control) {midi.sendShortMsg(0x90 + CMDPL.getChannelN(group), 0x21, value);}).trigger();
 		
 		engine.makeConnection(CMDPL.chList[i], 'scratch2_enable',     function (value, group, control) {midi.sendShortMsg(0x90 + CMDPL.getChannelN(group), 0x1B, value);}).trigger();
     } 
@@ -120,10 +94,10 @@ CMDPL.init = function (id) {
 	midi.sendShortMsg(0x92, 0x18, 0x01);
 	midi.sendShortMsg(0x93, 0x18, 0x01);
 	
-	engine.softTakeover('[Channel1]', 'rate', true);
-	engine.softTakeover('[Channel2]', 'rate', true);
-	engine.softTakeover('[Channel3]', 'rate', true);
-	engine.softTakeover('[Channel4]', 'rate', true);
+	//engine.softTakeover('[Channel1]', 'rate', true);
+	//engine.softTakeover('[Channel2]', 'rate', true);
+	//engine.softTakeover('[Channel3]', 'rate', true);
+	//engine.softTakeover('[Channel4]', 'rate', true);
 }
 
 CMDPL.super1red = function (value, group, control) {
@@ -134,14 +108,14 @@ CMDPL.beatszch = function (value, group, control) {
 	midi.sendShortMsg(0x90, 0x04, value);
 }
 CMDPL.qntz = function (value, group, control) {
-	midi.sendShortMsg(0x90, 0x02, value);
+	midi.sendShortMsg(0x90, 0x17, value);
 }
 
 CMDPL.button = function (channel, control, value, status, group) {
     //print('button');
     //channel = 0 1 2 3
     //print(group);
-    print(channel);
+    //print(channel);
 	
 	// First 8 buttons in rotaries always send channel 0!
 	switch (control) {
@@ -155,15 +129,18 @@ CMDPL.button = function (channel, control, value, status, group) {
 			if (value === 127) {
 				midi.sendShortMsg(0x90, 0x01, 0x01);
 				engine.setValue(CMDPL.cGroup, 'pitch', 0);
+				
+				midi.sendShortMsg(0xB0, 0x01, CMDPL.rroundLED[CMDPL.getChannelN(CMDPL.cGroup)][1] = 8);
 			}
 			if (value === 0) {
 				midi.sendShortMsg(0x90, 0x01, 0x00);
 			}
         break;
 
-        case 0x02: // Quantize
+        case 0x02:
 			if (value === 127) {
-				script.toggleControl(CMDPL.cGroup, 'quantize');
+				
+				
 			}
         break;
 
@@ -176,6 +153,7 @@ CMDPL.button = function (channel, control, value, status, group) {
         case 0x07: // Reset BPM
 			if (value === 127) {
 				engine.setValue(CMDPL.cGroup, 'rate', 0);
+				midi.sendShortMsg(0xB0, control, CMDPL.rroundLED[CMDPL.getChannelN(CMDPL.cGroup)][control] = 0x08);
 			}
         break;
 		
@@ -188,6 +166,7 @@ CMDPL.button = function (channel, control, value, status, group) {
 					break;
 				}
 				engine.setValue(CMDPL.chList[channel], 'hotcue_1_activate', 1);
+				
 			}
 			if (value === 0) {
 				//midi.sendShortMsg(0x90 + channel, 0x01, 0x00);
@@ -195,7 +174,7 @@ CMDPL.button = function (channel, control, value, status, group) {
 					
 					break;
 				}
-				//
+				engine.setValue(CMDPL.chList[channel], 'hotcue_1_activate', 0);
 			}
 		break;	
 			
@@ -213,7 +192,7 @@ CMDPL.button = function (channel, control, value, status, group) {
 					
 					break;
 				}
-				//
+				engine.setValue(CMDPL.chList[channel], 'hotcue_2_activate', 0);
 			}
 		break;
 		
@@ -231,7 +210,7 @@ CMDPL.button = function (channel, control, value, status, group) {
 					
 					break;
 				}
-				//
+				engine.setValue(CMDPL.chList[channel], 'hotcue_3_activate', 0);
 			}
 		break;
 		
@@ -244,12 +223,11 @@ CMDPL.button = function (channel, control, value, status, group) {
 				engine.setValue(CMDPL.chList[channel], 'hotcue_4_activate', 1);
 			}
 			if (value === 0) {
-				//midi.sendShortMsg(0x90 + channel, 0x01, 0x00);
 				if (CMDPL.shift[channel]) {
 					
 					break;
 				}
-				//
+				engine.setValue(CMDPL.chList[channel], 'hotcue_4_activate', 0);
 			}
 		break;
         
@@ -261,7 +239,14 @@ CMDPL.button = function (channel, control, value, status, group) {
 					engine.setValue(CMDPL.chList[channel], 'reloop_toggle', 1);
 					break;
 				}
-				engine.setValue(CMDPL.chList[channel], 'beatloop_activate', 1);
+				
+				if (engine.getValue(CMDPL.chList[channel], 'loop_enabled')) {
+					print("HERE");
+					engine.setValue(CMDPL.chList[channel], 'reloop_toggle', 1);
+				} else engine.setValue(CMDPL.chList[channel], 'beatloop_activate', 1);
+				
+				
+				//print('BLE: ' + engine.getValue(CMDPL.chList[channel], 'loop_enabled'));
 			}
 			if (value === 0) {
 				//midi.sendShortMsg(0x90 + channel, 0x01, 0x00);
@@ -310,27 +295,30 @@ CMDPL.button = function (channel, control, value, status, group) {
         case 0x17:
 			if (value === 127) {
 				if (CMDPL.shift[channel]) {
-					engine.setValue(CMDPL.chList[channel], 'loop_end_position', -2);
+					// ?
 					break;
 				}
-				engine.setValue(CMDPL.chList[channel], 'slip_enabled', 1);
+				script.toggleControl(CMDPL.cGroup, 'quantize');
 			}
 			if (value === 0) {
 				if (CMDPL.shift[channel]) {
 					
 					break;
 				}
-				engine.setValue(CMDPL.chList[channel], 'slip_enabled', 0);
+				// ?
 			}
 		break;
 			
-		case 0x18: // LOAD - SHIFT = function
+		case 0x18: // LOAD (shift)
 			if (value === 127) {
 				midi.sendShortMsg(0x90 + channel, 0x18, 0x00);
 				CMDPL.shift[channel] = true;
+				
 			}
 			if (value === 0) {
-				midi.sendShortMsg(0x90 + channel, 0x18, 0x01);
+				if (CMDPL.specialMODE[channel]) midi.sendShortMsg(0x90 + channel, 0x18, 0x02); 
+					else midi.sendShortMsg(0x90 + channel, 0x18, 0x01);
+				
 				CMDPL.shift[channel] = false;
 			}
         break;	
@@ -338,18 +326,27 @@ CMDPL.button = function (channel, control, value, status, group) {
 		case 0x19: // LOCK 
 			if (value === 127) {
 				if (CMDPL.shift[channel]) {
-					script.triggerControl(CMDPL.chList[channel], 'sync_key');
+					// MODE on
+					CMDPL.specialMODE[channel] = !CMDPL.specialMODE[channel];
+					
+					if (CMDPL.specialMODE[channel]) midi.sendShortMsg(0x90 + channel, 0x18, 0x02); 
+						else midi.sendShortMsg(0x90 + channel, 0x18, 0x00);
+					
 					break;
 				}
 				script.toggleControl(CMDPL.chList[channel], 'keylock', 1);
+				
+				break;
 			}
         break;
 		
 		case 0x20: // SYNC 
 			if (value === 127) {
 				if (CMDPL.shift[channel]) {
-					engine.setValue(CMDPL.chList[channel], 'rate', 0);
-					break;
+					// print("RATE: " + engine.getValue(CMDPL.chList[channel], 'rate'));
+					engine.setValue(CMDPL.chList[channel], 'rate', 0); 
+					// print("RATE: " + engine.getValue(CMDPL.chList[channel], 'rate'));
+					break; 
 				}
 				script.toggleControl(CMDPL.chList[channel], 'sync_enabled', 1);
 				CMDPL.syncTimer = engine.beginTimer(500, function() {CMDPL.syncLongPress = true}, true);
@@ -369,17 +366,17 @@ CMDPL.button = function (channel, control, value, status, group) {
 		case 0x21: // TAP 
 			if (value === 127) {
 				if (CMDPL.shift[channel]) {
-					//engine.setValue(CMDPL.chList[channel], 'rate', 0);
+					engine.setValue(CMDPL.chList[channel], 'bpm_tap', 1);
 					break;
 				}
-				script.toggleControl(CMDPL.chList[channel], 'bpm_tap', 1);
+				engine.setValue(CMDPL.chList[channel], 'slip_enabled', 1);
 			}
 			if (value === 0) {
 				if (CMDPL.shift[channel]) {
-					
+					engine.setValue(CMDPL.chList[channel], 'bpm_tap', 0);
 					break;
 				}
-				script.toggleControl(CMDPL.chList[channel], 'bpm_tap', 0);
+				engine.setValue(CMDPL.chList[channel], 'slip_enabled', 0);
 			}
         break;
         
@@ -486,7 +483,7 @@ CMDPL.button = function (channel, control, value, status, group) {
 					engine.setValue(CMDPL.chList[channel], 'start_play', 1);
 					break;
 				}
-				script.toggleControl(CMDPL.chList[channel], 'play');
+				engine.setValue(CMDPL.chList[channel], 'play', !engine.getValue(CMDPL.chList[channel], 'play'));
 				
 			}
         break; 
@@ -520,15 +517,19 @@ CMDPL.button = function (channel, control, value, status, group) {
 		case 0x1A: {
 			if (value === 127) {
 				
-				engine.makeConnection('[QuickEffectRack1_' + CMDPL.cGroup + ']', 'super1', true); 
-				engine.makeConnection(CMDPL.cGroup, 'quantize', true); 
-				engine.makeConnection(CMDPL.cGroup, 'loop_enabled', true); 
+			    CMDPL.supr1led.disconnect();    
+			    CMDPL.loopsizeled.disconnect(); 
+			    CMDPL.qntzled.disconnect(); 
 				
 				CMDPL.cGroup = CMDPL.chList[channel];
 				
-				engine.makeConnection('[QuickEffectRack1_' + CMDPL.cGroup + ']', 'super1', CMDPL.super1red).trigger();  
-				engine.makeConnection(CMDPL.cGroup, 'quantize', CMDPL.qntz).trigger();  
-				engine.makeConnection(CMDPL.cGroup, 'loop_enabled', CMDPL.beatszch).trigger();  
+				CMDPL.supr1led    = engine.makeConnection('[QuickEffectRack1_' + CMDPL.cGroup + ']', 'super1', CMDPL.super1red); CMDPL.supr1led.trigger();  
+				CMDPL.loopsizeled = engine.makeConnection(CMDPL.cGroup, 'loop_enabled', CMDPL.beatszch); CMDPL.loopsizeled.trigger();  
+				CMDPL.qntzled     = engine.makeConnection(CMDPL.cGroup, 'quantize', CMDPL.qntz); CMDPL.qntzled.trigger();  
+				
+				for (i = 0; i < 8; i++) {
+					midi.sendShortMsg(0xB0, (0x00 + i), CMDPL.rroundLED[channel][i]);
+				}
 			}
 		}
 		break;
@@ -538,8 +539,12 @@ CMDPL.button = function (channel, control, value, status, group) {
 }
 
 CMDPL.rotary = function (channel, control, value, status, group) {
+	// channel always 0 except JOG
+	//print(channel);
+	
 	// Is shift?
-	var shift = CMDPL.shift[CMDPL.getChannelN(CMDPL.cGroup)];
+	
+	
 	//print(shift);
 	
 	switch (control) {
@@ -558,6 +563,8 @@ CMDPL.rotary = function (channel, control, value, status, group) {
 				engine.setValue('[QuickEffectRack1_' + CMDPL.cGroup + ']', 'super1', super1);
 
 			}
+			
+			
 		break;
 		
 		// Rotary 2
@@ -566,25 +573,20 @@ CMDPL.rotary = function (channel, control, value, status, group) {
 			if (value == 0x41) {
 				pitch++;
 				engine.setValue(CMDPL.cGroup, 'pitch', pitch);
+				
+				midi.sendShortMsg(0xB0, control, ++CMDPL.rroundLED[CMDPL.getChannelN(CMDPL.cGroup)][control]);
 			} else if (value == 0x3F) {
 				pitch--;
 				engine.setValue(CMDPL.cGroup, 'pitch', pitch);
+				
+				midi.sendShortMsg(0xB0, control, --CMDPL.rroundLED[CMDPL.getChannelN(CMDPL.cGroup)][control]);
 			}
 			
 
 		break;
 		
 		// Rotary 3
-		case 0x02: // MOVE GRID
-			if (value === 0x41) {
-				engine.setValue(CMDPL.cGroup, 'beats_translate_later', 1);
-			} else if (value === 0x3f) {
-				engine.setValue(CMDPL.cGroup, 'beats_translate_earlier', 1);
-			}
-		break;
-		
-		// Rotary 4
-		case 0x03: // Adjust BPM 0.01
+		case 0x02: // Adjust BPM 0.01 
 			if (value === 0x41) {
 				engine.setValue(CMDPL.cGroup, 'beats_adjust_faster', 1);
 			} else if (value === 0x3f) {
@@ -592,18 +594,42 @@ CMDPL.rotary = function (channel, control, value, status, group) {
 			}
 		break;
 		
-		// Rotary 5
-		case 0x04: // 
+		// Rotary 4
+		case 0x03: // MOVE GRID
 			
 			if (value === 0x41) {
+				engine.setValue(CMDPL.cGroup, 'beats_translate_later', 1);
+			} else if (value === 0x3f) {
+				engine.setValue(CMDPL.cGroup, 'beats_translate_earlier', 1);
+			}
+		break;
+		
+		// Rotary 5
+		case 0x04: // 
+			var shift = CMDPL.shift[CMDPL.getChannelN(CMDPL.cGroup)];
+			var channel = CMDPL.getChannelN(CMDPL.cGroup);
+			
+			if (value === 0x41) {
+				if (CMDPL.specialMODE[channel]) {
+					//hotcue_X_position
+					engine.setValue(CMDPL.cGroup, 'hotcue_1_position', (engine.getValue(CMDPL.cGroup, 'hotcue_1_position') + 200));
+					break;
+				}
+				
 				if (shift) {
 					CMDPL.beat_size_pos = (CMDPL.beat_size_pos + 1) >= (CMDPL.beat_size.length - 1) ? (CMDPL.beat_size.length - 1) : CMDPL.beat_size_pos + 1;
-					engine.setValue(CMDPL.chList[channel], 'beatjump_size', CMDPL.beat_size[CMDPL.beat_size_pos]);
+					engine.setValue(CMDPL.cGroup, 'beatjump_size', CMDPL.beat_size[CMDPL.beat_size_pos]);
 					break;
 				}
 				CMDPL.loop_size_pos = (CMDPL.loop_size_pos + 1) >= CMDPL.loop_size.length ? (CMDPL.loop_size.length - 1) : CMDPL.loop_size_pos +1;
 				engine.setValue(CMDPL.cGroup, 'beatloop_size', CMDPL.loop_size[CMDPL.loop_size_pos]);
 			} else if (value === 0x3f) {
+				if (CMDPL.specialMODE[channel]) {
+					//hotcue_X_position
+					engine.setValue(CMDPL.cGroup, 'hotcue_1_position', (engine.getValue(CMDPL.cGroup, 'hotcue_1_position') - 200));
+					break;
+				}
+				
 				if (shift) {
 					CMDPL.beat_size_pos = (CMDPL.beat_size_pos - 1) <= 0 ? 0 : CMDPL.beat_size_pos -1;
 					engine.setValue(CMDPL.cGroup, 'beatjump_size', CMDPL.beat_size[CMDPL.beat_size_pos]);
@@ -616,63 +642,111 @@ CMDPL.rotary = function (channel, control, value, status, group) {
 		
 		// Rotary 6
 		case 0x05: // loop_start_position
-
-			var pos = engine.getValue(CMDPL.cGroup, 'loop_start_position');
-			if (shift) {
-				var tik = 250;
-			} else tik = 1000;
+			var shift = CMDPL.shift[CMDPL.getChannelN(CMDPL.cGroup)];
+			var channel = CMDPL.getChannelN(CMDPL.cGroup);
+			
+			if (!CMDPL.specialMODE[channel]) {
+				var pos = engine.getValue(CMDPL.cGroup, 'loop_start_position');
+				if (shift) {
+					var tik = 250;
+				} else tik = 1000;
+			}	
 			
 
 			if (value === 0x41) {
+				if (CMDPL.specialMODE[channel]) {
+					//hotcue_X_position
+					engine.setValue(CMDPL.cGroup, 'hotcue_2_position', (engine.getValue(CMDPL.cGroup, 'hotcue_2_position') + 200));
+					break;
+				}
+				
 				engine.setValue(CMDPL.cGroup, 'loop_start_position', pos + tik);
 			} else if (value === 0x3f) {
+				if (CMDPL.specialMODE[channel]) {
+					//hotcue_X_position
+					engine.setValue(CMDPL.cGroup, 'hotcue_2_position', (engine.getValue(CMDPL.cGroup, 'hotcue_2_position') - 200));
+					break;
+				}
+				
 				engine.setValue(CMDPL.cGroup, 'loop_start_position', pos - tik);
 			}
 		break;
 		
 		// Rotary 7
 		case 0x06: // loop_end_position
-
-			var pos = engine.getValue(CMDPL.cGroup, 'loop_end_position');
-			if (shift) {
-				var tik = 250;
-			} else tik = 500;
+			var shift = CMDPL.shift[CMDPL.getChannelN(CMDPL.cGroup)];
+			var channel = CMDPL.getChannelN(CMDPL.cGroup);
+		
+			if (!CMDPL.specialMODE[channel]) {
+				var pos = engine.getValue(CMDPL.cGroup, 'loop_end_position');
+				if (shift) {
+					var tik = 250;
+				} else tik = 500;
+			}
 			
 
 			if (value === 0x41) {
+				if (CMDPL.specialMODE[channel]) {
+					//hotcue_X_position
+					engine.setValue(CMDPL.cGroup, 'hotcue_3_position', (engine.getValue(CMDPL.cGroup, 'hotcue_3_position') + 200));
+					break;
+				}
+				
 				engine.setValue(CMDPL.cGroup, 'loop_end_position', pos + tik);
 			} else if (value === 0x3f) {
+				if (CMDPL.specialMODE[channel]) {
+					//hotcue_X_position
+					engine.setValue(CMDPL.cGroup, 'hotcue_3_position', (engine.getValue(CMDPL.cGroup, 'hotcue_3_position') - 200));
+					break;
+				}
+				
 				engine.setValue(CMDPL.cGroup, 'loop_end_position', pos - tik);
 			}
 		break;	
 		
 		// Rotary 8
-		case 0x07: // 
+		case 0x07: // BPM +/- 1 (Implement bpm round)
+			var channel = CMDPL.getChannelN(CMDPL.cGroup);
 			var bpm = Math.round(engine.getValue(CMDPL.cGroup, 'bpm'));
 			
 			if (value === 0x41) {
+				if (CMDPL.specialMODE[channel]) {
+					//hotcue_X_position
+					engine.setValue(CMDPL.cGroup, 'hotcue_4_position', (engine.getValue(CMDPL.cGroup, 'hotcue_4_position') + 200));
+					break;
+				}
+				
 				bpm++;
 				engine.setValue(CMDPL.cGroup, 'bpm', bpm);
+				midi.sendShortMsg(0xB0, control, ++CMDPL.rroundLED[channel][control]);
+				
 			} else if (value === 0x3f) {
+				if (CMDPL.specialMODE[channel]) {
+					//hotcue_X_position
+					engine.setValue(CMDPL.cGroup, 'hotcue_4_position', (engine.getValue(CMDPL.cGroup, 'hotcue_4_position') - 200));
+					break;
+				}
+				
 				bpm--;
 				engine.setValue(CMDPL.cGroup, 'bpm', bpm);
+				midi.sendShortMsg(0xB0, control, --CMDPL.rroundLED[channel][control]);
 			}
 		break;	
 		
-		// JOG
+		// JOGss
 		case 0x1F: // 
-			var channel = channel + 1;
+			var ch = channel + 1;
 			var newValue = value - 64;
-			if (CMDPL.g.invertJogs) {
+			if (CMDPL.invertJogs) {
 				switch (true) {
 					case newValue > 0 : newValue = 0 - newValue; break;
 					case newValue < 0 : newValue = Math.abs(newValue) ; break;
 				}
 			}
-			if (engine.isScratching(channel)) {
-				engine.scratchTick(channel, newValue); // Scratch!
-			} else {
-				engine.setValue(CMDPL.cGroup, 'jog', newValue); // Pitch bend
+			if (engine.isScratching(ch)) {
+				engine.scratchTick(ch, newValue); // Scratch!
+ 			} else {
+				engine.setValue(CMDPL.chList[channel], 'jog', newValue); // Pitch bend
 			}
 		break;	
 	}

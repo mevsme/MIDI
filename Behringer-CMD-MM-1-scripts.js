@@ -412,7 +412,7 @@ CMDMM.cue = function (deck, value) {
 				midi.sendShortMsg(0x94, CMDMM.ctrl[(deck-1)][0], 0x01);
 			}
 			
-			//engine.setValue('[Channel' + deck + ']', 'orientation', orientation);
+			// Nothing for SHIFT
 		} else {
 			script.toggleControl('[Channel' + deck + ']', 'pfl');
 		}
@@ -424,7 +424,7 @@ CMDMM.cue = function (deck, value) {
 				engine.setValue('[Channel' + deck + ']', 'beatsync', 0);
 				midi.sendShortMsg(0x94, CMDMM.ctrl[(deck-1)][0], 0x00);
 				var name = 'pfl' + deck;
-				CMDMM[name].trigger();
+				CMDMM[name].trigger(); // LED
 				return;
 			}
 		}
