@@ -14,9 +14,9 @@ CMDDC.padLigtsUpdate = function() {
 CMDDC.padMakeConnection = function (ctrl, iter) {
 	engine.makeConnection('[Sampler' + iter + ']', 'play', function(value) {
 		if (engine.getValue('[Sampler' + iter + ']', 'track_loaded') === 1) {
-			if (value == 0) value = 1; else value = 2;
+			if (value === 0) value = 1; else value = 2;
 		} else {
-			if (value == 0) value = 0; else value = 2; 
+			if (value === 0) value = 0; else value = 2; 
 		}
 		midi.sendShortMsg(0x95, ctrl, value);
 	}); 
@@ -56,17 +56,14 @@ CMDDC.init = function (id) {
 		midi.sendShortMsg(0xB5, 0x0F + i, CMDDC.gainLED('[Sampler'+i+']'));
 	}
 	
-	engine.makeConnection('[Sampler1]', 'pregain', function(value, group) {midi.sendShortMsg(0xB5, 0x10, CMDDC.gainLED(group))});
-	engine.makeConnection('[Sampler2]', 'pregain', function(value, group) {midi.sendShortMsg(0xB5, 0x11, CMDDC.gainLED(group))});
-	engine.makeConnection('[Sampler3]', 'pregain', function(value, group) {midi.sendShortMsg(0xB5, 0x12, CMDDC.gainLED(group))});
-	engine.makeConnection('[Sampler4]', 'pregain', function(value, group) {midi.sendShortMsg(0xB5, 0x13, CMDDC.gainLED(group))});
-	engine.makeConnection('[Sampler5]', 'pregain', function(value, group) {midi.sendShortMsg(0xB5, 0x14, CMDDC.gainLED(group))});
-	engine.makeConnection('[Sampler6]', 'pregain', function(value, group) {midi.sendShortMsg(0xB5, 0x15, CMDDC.gainLED(group))});
-	engine.makeConnection('[Sampler7]', 'pregain', function(value, group) {midi.sendShortMsg(0xB5, 0x16, CMDDC.gainLED(group))});
-	engine.makeConnection('[Sampler8]', 'pregain', function(value, group) {midi.sendShortMsg(0xB5, 0x17, CMDDC.gainLED(group))});
-	
-	engine.makeConnection('[AutoDJ]', 'enabled', function(value) {midi.sendShortMsg(0x95, 0x03, value)});
-	engine.makeConnection('[AutoDJ]', 'fade_now', function(value) {midi.sendShortMsg(0x95, 0x07, value)});
+	engine.makeConnection('[Sampler1]', 'pregain', function(value, group) {midi.sendShortMsg(0xB5, 0x14, CMDDC.gainLED(group))});
+	engine.makeConnection('[Sampler2]', 'pregain', function(value, group) {midi.sendShortMsg(0xB5, 0x15, CMDDC.gainLED(group))});
+	engine.makeConnection('[Sampler3]', 'pregain', function(value, group) {midi.sendShortMsg(0xB5, 0x16, CMDDC.gainLED(group))});
+	engine.makeConnection('[Sampler4]', 'pregain', function(value, group) {midi.sendShortMsg(0xB5, 0x17, CMDDC.gainLED(group))});
+	engine.makeConnection('[Sampler5]', 'pregain', function(value, group) {midi.sendShortMsg(0xB5, 0x10, CMDDC.gainLED(group))});
+	engine.makeConnection('[Sampler6]', 'pregain', function(value, group) {midi.sendShortMsg(0xB5, 0x11, CMDDC.gainLED(group))});
+	engine.makeConnection('[Sampler7]', 'pregain', function(value, group) {midi.sendShortMsg(0xB5, 0x12, CMDDC.gainLED(group))});
+	engine.makeConnection('[Sampler8]', 'pregain', function(value, group) {midi.sendShortMsg(0xB5, 0x13, CMDDC.gainLED(group))});
 	
 	engine.makeConnection('[Recording]', 'status', function(value) {midi.sendShortMsg(0x95, 0x04, value)});
 	
@@ -90,11 +87,15 @@ CMDDC.init = function (id) {
 	CMDDC.shift5 = false; // Stop
 	CMDDC.shift6 = false; // Play
 	CMDDC.orientation = false; // Orientation
-	//CMDDC.shift8 = false; // Load to sampler Track 1-8
+	
+	CMDDC.shift8 = false; // hot cue w pitch
+	CMDDC.bpmPitch = false;
+	CMDDC.sampler = 1;
+	
 	CMDDC.shift9 = false; // Load to sampler Track 9-18
 	
 	
-	CMDDC.tmp1 = false; // VOL Rot shift, Line 193
+	CMDDC.tmp1 = 0; // VOL Rot shift, Line 193
 	//CMDDC.tmp2 = engine.getValue('[Samplers]', 'show_samplers');   // show samples
 	CMDDC.tmp3 = false ;   // sampleRow1
 	
@@ -115,9 +116,6 @@ CMDDC.init = function (id) {
 						 1, 1, 1, 1, 
 						 1, 1, 1, 1, 
 						 1, 1, 1, 1];
-						 
-						 
-	
 						  
 	CMDDC.memoThree = [];
 	
@@ -135,61 +133,95 @@ CMDDC.init = function (id) {
 	for (i = 0; i < 16; i++) {
 		CMDDC.memoFour[i] = engine.getValue('[Sampler' + (i + 1) + ']', 'pfl');
 	}
-
-	
-
 };
-
- 
 
 CMDDC.button = function(channel, control, value, status, group) {
 	
 	switch (control) {
-		case 0x00: if (value == 127) {if (CMDDC.LoadMode) break; engine.setValue('[Library]', 'AutoDjAddTop', 1)}  break;
-		case 0x01: if (value == 127) {if (CMDDC.LoadMode) break; engine.setValue('[Channel1]', 'LoadSelectedTrack', 1)}  break;
-		case 0x02: if (value == 127) {if (CMDDC.LoadMode) break; engine.setValue('[Channel2]', 'LoadSelectedTrack', 1)}  break;
-		case 0x03: if (value == 127) {
-			if (CMDDC.LoadMode) {
+		case 0x00: 
+			if (value === 127) {if (CMDDC.LoadMode) break; engine.setValue('[Library]', 'AutoDjAddTop', 1)}  
+			
+		break;
+		
+		case 0x01: 
+			if (value === 127) {
+				if (CMDDC.LoadMode) {break;}
+				engine.setValue('[Channel1]', 'CloneFromDeck', 2);
+			}  
+		break;
+		case 0x02: 
+			if (value === 127) {
+				if (CMDDC.LoadMode) {break;}
+				engine.setValue('[Channel2]', 'CloneFromDeck', 1);
+			}  
+		break;
+		case 0x03: 
+			if (value === 127) {
+				if (CMDDC.LoadMode) {
+					break;
+				}
+				//engine.setValue('[Channel1]', 'pitch', 0);
 				script.toggleControl('[Samplers]', 'show_samplers');
-				break;
-			}
-			script.toggleControl('[AutoDJ]', 'enabled');
-		};  
+			}  
 		break;
 		
 		case 0x04: 
-			if (value == 127) {
+			if (value === 127) {
 				if (CMDDC.LoadMode) {
 					engine.setValue('[Recording]', 'toggle_recording', 1);
 					break;
 				}
-				script.triggerControl('[Library]', 'AutoDjAddBottom', 1);
+				//if (CMDDC.shift1) {CMDDC.bpmPitch = !CMDDC.bpmPitch; midi.sendShortMsg(0x95, 0x07, 0x02); break;}
+				CMDDC.shift8 = !CMDDC.shift8;
+				CMDDC.sampler = 1;
+				if (CMDDC.shift8) {
+					midi.sendShortMsg(0x95, 0x04, 0x01);
+					for (i = 0x24; i < (0x24 + 16); i++) {
+						midi.sendShortMsg(0x95, i, 0x00);
+						if (i == 0x28) midi.sendShortMsg(0x95, 0x28, 0x01);  
+						if (i == 0x2F) midi.sendShortMsg(0x95, 0x2F, 0x01);  
+					}
+				} else {
+					midi.sendShortMsg(0x95, 0x04, 0x00); 
+					midi.sendShortMsg(0x95, 0x07, 0x00);
+					CMDDC.padLigtsUpdate();
+				}
+				
 			}  
 		break;
 					
 				
-		case 0x05: 
-			if (value == 127) {
-				if (CMDDC.LoadMode) {break;}
-				script.triggerControl('[Channel1]', 'CloneFromDeck', 2);
-			}  
-		break;
-			
-			
-		case 0x06: if (value == 127) {if (CMDDC.LoadMode) break; script.triggerControl('[Channel2]', 'CloneFromDeck', 1)};  break;
-		case 0x07: if (value == 127) {
+		case 0x05: if (value === 127) {if (CMDDC.LoadMode) break; engine.setValue('[Channel1]', 'LoadSelectedTrack', 1)}  break;
+		case 0x06: if (value === 127) {if (CMDDC.LoadMode) break; engine.setValue('[Channel2]', 'LoadSelectedTrack', 1)}  break;
+		
+		case 0x07: 
+			if (value === 127) {
 				if (CMDDC.LoadMode) {engine.setValue('[Sampler]', 'LoadSamplerBank', 1); break;}
-				script.triggerControl('[AutoDJ]', 'fade_now', 1);
+				//if (CMDDC.shift1) {CMDDC.bpmPitch = !CMDDC.bpmPitch; midi.sendShortMsg(0x95, 0x07, 0x02); break;}
+				CMDDC.shift8 = !CMDDC.shift8;
+				CMDDC.sampler = 2;
+				if (CMDDC.shift8) {
+					midi.sendShortMsg(0x95, 0x07, 0x01);
+					for (i = 0x24; i < (0x24 + 16); i++) {
+						midi.sendShortMsg(0x95, i, 0x00);
+						if (i == 0x28) midi.sendShortMsg(0x95, 0x28, 0x01);  
+						if (i == 0x2F) midi.sendShortMsg(0x95, 0x2F, 0x01);  
+					}
+				} else {
+					midi.sendShortMsg(0x95, 0x04, 0x00); 
+					midi.sendShortMsg(0x95, 0x07, 0x00);
+					CMDDC.padLigtsUpdate();
+				}
 			};  
 		break;
 		
 		case 0x20: // Middle Rotary
-			if (value == 127) {
+			if (value === 127) {
 				if (CMDDC.LoadMode === true) {
 					for (i = 0; i <= 0x33; i++) {if (i === 0x03 || i === 0x04) continue; midi.sendShortMsg(0x95, i, 0x00);}
 					CMDDC.LoadMode = false;
 					CMDDC.padLigtsUpdate();
-					CMDDC.tmp1 = false;
+					CMDDC.tmp1 = 0;
 				} else {
 					CMDDC.LoadMode = true;
 					for (i = 0; i <= 0x33; i++) {if (i === 0x03 || i === 0x04) continue; midi.sendShortMsg(0x95, i, 0x01);}
@@ -217,20 +249,20 @@ CMDDC.button = function(channel, control, value, status, group) {
 
 		
 		case 0x10: 
-			if (value == 127) {
+			if (value === 127) {
 				if (CMDDC.LoadMode) break; 
 				CMDDC.shift1 = true;
 				midi.sendShortMsg(0x95, 0x10, 0x01);
 				for (i = 36, a = 0; i < (36 + 16); i++, a++) {
 					
-					if (CMDDC.memoOne[a] == 1) {
+					if (CMDDC.memoOne[a] === 1) {
 							midi.sendShortMsg(0x95, i, 0x01);
 							print("ok");
 						} else midi.sendShortMsg(0x95, i, 0x00);
 				}
 			}
 
-			if (value == 0) {
+			if (value === 0) {
 				if (CMDDC.LoadMode) break; 
 				CMDDC.shift1 = false;
 				midi.sendShortMsg(0x95, 0x10, 0x00);
@@ -239,20 +271,20 @@ CMDDC.button = function(channel, control, value, status, group) {
 			break;
 		
 		case 0x11:
-			if (value == 127) {
+			if (value === 127) {
 				if (CMDDC.LoadMode) break; 
 				CMDDC.shift3 = true;
 				midi.sendShortMsg(0x95, 0x11, 0x01);
 				for (i = 36, a = 0; i < (36 + 16); i++, a++) {
 					
-					if (CMDDC.memoThree[a] == 1) {
+					if (CMDDC.memoThree[a] === 1) {
 							midi.sendShortMsg(0x95, i, 0x01);
 							print("ok");
 						} else midi.sendShortMsg(0x95, i, 0x00);
 				}
 			}
 
-			if (value == 0) {
+			if (value === 0) {
 				if (CMDDC.LoadMode) break; 
 				CMDDC.shift3 = false;
 				midi.sendShortMsg(0x95, 0x11, 0x00);
@@ -261,68 +293,71 @@ CMDDC.button = function(channel, control, value, status, group) {
 			break;
 			
 		case 0x12:
-			if (value == 127) {
+			if (value === 127) {
 				if (CMDDC.LoadMode) {for (i = 1; i < 64; i++) {engine.setValue('[Sampler' + i + ']','eject', 1)}; break;}
 				CMDDC.shift2 = true;
 				midi.sendShortMsg(0x95, 0x12, 0x01);
 				for (i = 36, a = 0; i < (36 + 16); i++, a++) {
 					
-					if (CMDDC.memoTwo[a] == 1) {
+					if (CMDDC.memoTwo[a] === 1) {
 							midi.sendShortMsg(0x95, i, 0x01);
 							print("ok");
 						} else midi.sendShortMsg(0x95, i, 0x00);
 				}
 			}
 
-			if (value == 0) {
+			if (value === 0) {
 				if (CMDDC.LoadMode) {for (i = 1; i < 64; i++) {engine.setValue('[Sampler' + i + ']','eject', 0)}; break;}
 				CMDDC.shift2 = false;
 				midi.sendShortMsg(0x95, 0x12, 0x00);
 				CMDDC.padLigtsUpdate();
 			}
-			break;
+		break;
 			
 		case 0x13:
-			if (value == 127) {
-				if (CMDDC.LoadMode) break; 
-				CMDDC.shift4 = true;
+			if (value === 127) {
+				//if (CMDDC.LoadMode) break; 
+				CMDDC.shift4 = !CMDDC.shift4;
+				if (CMDDC.shift4) midi.sendShortMsg(0x95, 0x13, 0x01); else midi.sendShortMsg(0x95, 0x13, 0x00);
+				/*
 				midi.sendShortMsg(0x95, 0x13, 0x01);
 				for (i = 36, a = 0; i < (36 + 16); i++, a++) {
 					
-					if (CMDDC.memoFour[a] == 1) {
+					if (CMDDC.memoFour[a] === 1) {
 							midi.sendShortMsg(0x95, i, 0x01);
 							print("ok");
 						} else midi.sendShortMsg(0x95, i, 0x00);
 				}
+				*/
 
 			}
 
-			if (value == 0) {
-				if (CMDDC.LoadMode) break; 
-				CMDDC.shift4 = false;
-				CMDDC.padLigtsUpdate();
-				midi.sendShortMsg(0x95, 0x13, 0x00);
+			if (value === 0) {
+				//if (CMDDC.LoadMode) break; 
+				//CMDDC.shift4 = false;
+				//CMDDC.padLigtsUpdate();
+				//midi.sendShortMsg(0x95, 0x13, 0x00);
 			}
-			break;
+		break;
 			
 		case 0x14:
-			if (value == 127) {
+			if (value === 127) {
 				if (CMDDC.LoadMode) break; 
 				CMDDC.shift5 = true;
 				midi.sendShortMsg(0x95, 0x14, 0x01);
 
 			}
 
-			if (value == 0) {
+			if (value === 0) {
 				if (CMDDC.LoadMode) break; 
 				CMDDC.shift5 = false;
 				midi.sendShortMsg(0x95, 0x14, 0x00);
 
 			}
-			break;
+		break;
 			
 		case 0x15:
-			if (value == 127) {
+			if (value === 127) {
 				if (CMDDC.LoadMode) break; 
 				//CMDDC.shift6 = true;
 				midi.sendShortMsg(0x95, 0x15, 0x01);
@@ -331,7 +366,7 @@ CMDDC.button = function(channel, control, value, status, group) {
 				print("you are here");
 			}
 
-			if (value == 0) {
+			if (value === 0) {
 				if (CMDDC.LoadMode) break; 
 				midi.sendShortMsg(0x95, 0x15, 0x00);
 
@@ -339,13 +374,13 @@ CMDDC.button = function(channel, control, value, status, group) {
 			break;
 			
 		case 0x16:
-			if (value == 127) {
+			if (value === 127) {
 				if (CMDDC.LoadMode) break; 
 				CMDDC.orientation = true;
 				midi.sendShortMsg(0x95, 0x16, 0x01);
 				for (i = 36, a = 0; i < (36 + 16); i++, a++) {
 					
-					if (CMDDC.memoSeven[a] == 1) {
+					if (CMDDC.memoSeven[a] === 1) {
 							midi.sendShortMsg(0x95, i, 0x00);
 							print("ok");
 						} else midi.sendShortMsg(0x95, i, 0x01);
@@ -353,7 +388,7 @@ CMDDC.button = function(channel, control, value, status, group) {
 
 			}
 
-			if (value == 0) {
+			if (value === 0) {
 				if (CMDDC.LoadMode) break; 
 				CMDDC.orientation = false;
 				CMDDC.padLigtsUpdate();
@@ -362,16 +397,19 @@ CMDDC.button = function(channel, control, value, status, group) {
 			break;
 			
 		case 0x17:
-			if (value == 127) {
+			if (value === 127) {
 				if (CMDDC.LoadMode) break; 
 				if (CMDDC.tmp1) {
-					CMDDC.tmp1 = false;
+					CMDDC.tmp1 = 0;
 					midi.sendShortMsg(0x95, 0x17, 0x00);
 
 				} else {
-					CMDDC.tmp1 = true;
+					CMDDC.tmp1 = 8;
 					midi.sendShortMsg(0x95, 0x17, 0x01);
 				}
+				
+				CMDDC.bpmPitch = !CMDDC.bpmPitch;
+				
 			}
 			break;
 	}
@@ -379,132 +417,202 @@ CMDDC.button = function(channel, control, value, status, group) {
 
 
 CMDDC.rotary = function(channel, control, value, status, group) {
-	print("fn.rotary");
+	//print("fn.rotary");
 	
 	switch (control) {
-		case 0x10: CMDDC.volume(1, value); break;
-		case 0x11: CMDDC.volume(2, value); break;
-		case 0x12: CMDDC.volume(3, value); break;
-		case 0x13: CMDDC.volume(4, value); break;
-		case 0x14: CMDDC.volume(5, value); break;
-		case 0x15: CMDDC.volume(6, value); break;
-		case 0x16: CMDDC.volume(7, value); break;
-		case 0x17: CMDDC.volume(8, value); break;
+		case 0x10: CMDDC.rtry(5, value); break;
+		case 0x11: CMDDC.rtry(6, value); break;
+		case 0x12: CMDDC.rtry(7, value); break;
+		case 0x13: CMDDC.rtry(8, value); break;
+		case 0x14: CMDDC.rtry(1, value); break;
+		case 0x15: CMDDC.rtry(2, value); break;
+		case 0x16: CMDDC.rtry(3, value); break;
+		case 0x17: CMDDC.rtry(4, value); break;
 		
 		case 0x20: 
-			if (value == 0x41) {
+			if (value === 0x41) {
 				engine.setValue('[Playlist]', 'SelectNextTrack', 1);
-				return;
+				break;
 			}
-			if (value == 0x3F) {
+			if (value === 0x3F) {
 				engine.setValue('[Playlist]', 'SelectPrevTrack', 1);
-				return;
+				break;
 			}
-			break;
 	}
 	
 	
 }
 
 CMDDC.pad = function(num, value) {
-if (value == 127) {
-		if (CMDDC.shift1 == true) { // oneshot
-			if (CMDDC.memoOne[num] == 0) {
+	if (CMDDC.shift8 === true) {
+		
+		var scale = [[-7, -5, -3, -1, 0, 2, 4, 5, 7, 9, 11, 12, 14, 16, 17, 19], [-7, -5, -4, -2, 0, 2, 3, 5, 7, 8, 10, 12, 14, 15, 17, 19]];
+		var pitch;
+			
+		if (!CMDDC.bpmPitch) {
+			engine.setValue('[Channel'+CMDDC.sampler+']', 'pitch_adjust', scale[0][num]);
+		} else {
+			
+			//Method 2
+			var bpm = engine.getValue('[Channel'+CMDDC.sampler+']', 'file_bpm') ? engine.getValue('[Channel'+CMDDC.sampler+']', 'file_bpm') : 100;
+			switch (num) { // Maj BPM
+				case 0:  bpm = bpm * Math.pow(2, scale[0][num] / 12); break;
+				case 1:  bpm = bpm * Math.pow(2, scale[0][num] / 12); break;
+				case 2:  bpm = bpm * Math.pow(2, scale[0][num] / 12); break;
+				case 3:  bpm = bpm * Math.pow(2, scale[0][num] / 12); break;
+				case 4:  bpm = bpm * Math.pow(2, scale[0][num] / 12); break;
+				case 5:  bpm = bpm * Math.pow(2, scale[0][num] / 12); break;
+				case 6:  bpm = bpm * Math.pow(2, scale[0][num] / 12); break;
+				case 7:  bpm = bpm * Math.pow(2, scale[0][num] / 12); break;
+				case 8:  bpm = bpm * Math.pow(2, scale[0][num] / 12); break;
+				case 9:  bpm = bpm * Math.pow(2, scale[0][num] / 12); break;
+				case 10: bpm = bpm * Math.pow(2, scale[0][num] / 12); break;
+				case 11: bpm = bpm * Math.pow(2, scale[0][num] / 12); break;
+				case 12: bpm = bpm * Math.pow(2, scale[0][num] / 12); break;
+				case 13: bpm = bpm * Math.pow(2, scale[0][num] / 12); break;
+				case 14: bpm = bpm * Math.pow(2, scale[0][num] / 12); break;
+				case 15: bpm = bpm * Math.pow(2, scale[0][num] / 12); break;
+			}
+			engine.setValue('[Channel'+CMDDC.sampler+']', 'bpm', bpm);
+		}
+			
+			
+			
+			
+			// Method 3
+			//engine.setValue('[Channel'+ch+']', 'rateRange', 1);
+			// switch (num) { // Maj => rate
+				// case 0:  rate = -0.3326; break; //-7 -33.26
+				// case 1:  rate = -0.2508; break; //-5 -25.08
+				// case 2:  rate = -0.1591; break; //-3 -15.91
+				// case 3:  rate = -0.0561; break; //-1 -5.61
+				// case 4:  rate = 0;       break; // 0 0
+				// case 5:  rate = 0.1225;  break; // 2 12.25
+				// case 6:  rate = 0.2599;  break; // 4 25.99
+				// case 7:  rate = 0.3348;  break; // 5 33.48
+				// case 8:  rate = 0.4983;  break; // 7 49.83
+				// case 9:  rate = 0.6818;  break; // 9 68.18
+				// case 10: rate = 0.8877;  break; // 11 88.77
+				// case 11: rate = 1;       break; // 12 100
+				// case 12: rate = 1.2449;  break; // 14 124.49
+				// case 13: rate = 1.5198;  break; // 16 151.98
+				// case 14: rate = 1.6697;  break; // 17 166.97
+				// case 15: rate = 1.9966;  break; // 19 199.66
+			// }
+			//engine.setValue('[Channel'+ch+']', 'rate', rate);
+		
+		if (value === 127) {
+			//engine.setValue('[Channel'+ch+']', 'hotcue_4_activate', 0);
+			engine.setValue('[Channel'+CMDDC.sampler+']', 'cue_default', 1);
+		}
+		if (value === 0) {
+			engine.setValue('[Channel'+CMDDC.sampler+']', 'cue_default', 0);
+		}
+		
+		return;
+	}
+	
+	if (value === 127) {
+		if (CMDDC.shift1 === true) { // oneshot
+			if (CMDDC.memoOne[num] === 0) {
 				CMDDC.memoOne[num] = 1;
-				midi.sendShortMsg(0x95, ( 36 + num), 0x01);
+				midi.sendShortMsg(0x95, ( 0x24 + num), 0x01);
 				return;
 			}
-			if (CMDDC.memoOne[num] == 1) {
+			if (CMDDC.memoOne[num] === 1) {
 				CMDDC.memoOne[num] = 0;
-				midi.sendShortMsg(0x95, ( 36 + num), 0x00);
+				midi.sendShortMsg(0x95, ( 0x24 + num), 0x00);
 				return;
 			}
 			
 		}
-		if (CMDDC.shift2 == true) { // sync
-			if (CMDDC.memoTwo[num] == 0) {
+		if (CMDDC.shift2 === true) { // sync
+			if (CMDDC.memoTwo[num] === 0) {
 				CMDDC.memoTwo[num] = 1;
 				engine.setValue('[Sampler' + (num + 1) + ']', 'sync_enabled', 1);
-				midi.sendShortMsg(0x95, ( 36 + num), 0x01);
+				midi.sendShortMsg(0x95, ( 0x24 + num), 0x01);
 				return;
 			}
-			if (CMDDC.memoTwo[num] == 1) {
+			if (CMDDC.memoTwo[num] === 1) {
 				CMDDC.memoTwo[num] = 0;
 				engine.setValue('[Sampler' + (num + 1) + ']', 'sync_enabled', 0);
 				engine.setValue('[Sampler' + (num + 1) + ']', 'rate', 0);
-				midi.sendShortMsg(0x95, ( 36 + num), 0x00);
+				engine.setValue('[Sampler' + (num + 1) + ']', 'pitch', 0);
+				midi.sendShortMsg(0x95, ( 0x24 + num), 0x00);
 				return;
 			}
 			
 		}
-		if (CMDDC.shift3 == true) {
-			if (CMDDC.memoThree[num] == 0) {
+		if (CMDDC.shift3 === true) {
+			if (CMDDC.memoThree[num] === 0) {
 				CMDDC.memoThree[num] = 1;
 				engine.setValue('[Sampler' + (num + 1) + ']', 'repeat', 1);
-				midi.sendShortMsg(0x95, ( 36 + num), 0x01);
+				midi.sendShortMsg(0x95, ( 0x24 + num), 0x01);
 				return;
 			}
-			if (CMDDC.memoThree[num] == 1) {
+			if (CMDDC.memoThree[num] === 1) {
 				CMDDC.memoThree[num] = 0;
 				engine.setValue('[Sampler' + (num + 1) + ']', 'repeat', 0);
-				midi.sendShortMsg(0x95, ( 36 + num), 0x00);
+				midi.sendShortMsg(0x95, ( 0x24 + num), 0x00);
 				return;
 			}
 			
 		}
-		if (CMDDC.shift4 == true) {
-			if (CMDDC.memoFour[num] == 0) {
+		/*
+		if (CMDDC.shift4 === true) {
+			if (CMDDC.memoFour[num] === 0) {
 				CMDDC.memoFour[num] = 1;
 				engine.setValue('[Sampler' + (num + 1) + ']', 'pfl', 1);
-				midi.sendShortMsg(0x95, ( 36 + num), 0x01);
+				midi.sendShortMsg(0x95, ( 0x24 + num), 0x01);
 				return;
 			}
-			if (CMDDC.memoFour[num] == 1) {
+			if (CMDDC.memoFour[num] === 1) {
 				CMDDC.memoFour[num] = 0;
 				engine.setValue('[Sampler' + (num + 1) + ']', 'pfl', 0);
-				midi.sendShortMsg(0x95, ( 36 + num), 0x00);
+				midi.sendShortMsg(0x95, ( 0x24 + num), 0x00);
 				return;
 			}
 			
 		}
-		if (CMDDC.orientation == true) {
-			if (CMDDC.memoSeven[num] == 0) {
+		*/
+		if (CMDDC.orientation === true) {
+			if (CMDDC.memoSeven[num] === 0) {
 				CMDDC.memoSeven[num] = 1;
 				engine.setValue('[Sampler' + (num + 1) + ']', 'orientation', 1);
-				midi.sendShortMsg(0x95, ( 36 + num), 0x00);
+				midi.sendShortMsg(0x95, ( 0x24 + num), 0x00);
 				return;
 			}
-			if (CMDDC.memoSeven[num] == 1) {
+			if (CMDDC.memoSeven[num] === 1) {
 				CMDDC.memoSeven[num] = 2;
 				engine.setValue('[Sampler' + (num + 1) + ']', 'orientation', 2);
-				midi.sendShortMsg(0x95, ( 36 + num), 0x01);
+				midi.sendShortMsg(0x95, ( 0x24 + num), 0x01);
 				return;
 			}
-			if (CMDDC.memoSeven[num] == 2) {
+			if (CMDDC.memoSeven[num] === 2) {
 				CMDDC.memoSeven[num] = 0;
 				engine.setValue('[Sampler' + (num + 1) + ']', 'orientation', 0);
-				midi.sendShortMsg(0x95, ( 36 + num), 0x02);
+				midi.sendShortMsg(0x95, ( 0x24 + num), 0x02);
 				return;
 			}
 			
 		}
-		if (CMDDC.shift5 == true) {
+		if (CMDDC.shift5 === true) {
 			engine.setValue('[Sampler' + (num + 1) + ']', 'stop', 1);
 			return;
 		}
 		
-		if (CMDDC.LoadMode == true) {
+		if (CMDDC.LoadMode === true) {
 			engine.setValue('[Sampler' + (num + 1) + ']', 'LoadSelectedTrack', 1);
 			return;
 		}
 		
 		// Unfinished
-		if (CMDDC.shift6 == true) {
+		if (CMDDC.shift6 === true) {
 			engine.setValue('[Sampler' + (num + 1) + ']', 'play', 1);
 			return;
 		}
 		
-		if (CMDDC.tmp1 === true) {
+		if (false) {
 			switch (num) {
 				case 0:  CMDDC.plyRow(0, [1, 2, 3, 4]); break;
 				case 4:  CMDDC.plyRow(1, [5, 6, 7, 8]); break;
@@ -518,17 +626,16 @@ if (value == 127) {
 			return;
 		}
 	}
-		
-
-	if (CMDDC.memoOne[num] == 1) { // Shifted
-		if (value == 127) {
+	
+	if (CMDDC.memoOne[num] === 1) { // Shifted
+		if (value === 127) {
 			engine.setValue('[Sampler' + (num + 1) + ']', 'cue_default', 1);
 			CMDDC.memoFive[num] = 1;
 			
 			CMDDC.whatPlay = (num + 1);
 			//print("");
 		}
-		if (value == 0) {
+		if (value === 0) {
 			engine.setValue('[Sampler' + (num + 1) + ']', 'cue_default', 0);
 			if (engine.getValue('[Sampler' + (num + 1) + ']', 'play') !== 1) {
 				engine.setValue('[Sampler' + (num + 1) + ']', 'cue_gotoandstop', 1);
@@ -539,9 +646,9 @@ if (value == 127) {
 			//print("");
 		}
 	}
-	if (CMDDC.memoOne[num] == 0) { // Not shifted
+	if (CMDDC.memoOne[num] === 0) { // Not shifted
 		//print("");
-		if (value == 127) {
+		if (value === 127) {
 			if (engine.getValue('[Sampler' + (num + 1) + ']', 'repeat') === 1 &&
 			    engine.getValue('[Sampler' + (num + 1) + ']', 'play') === 1) {
 				engine.setValue('[Sampler' + (num + 1) + ']', 'cue_gotoandstop', 1);
@@ -553,7 +660,7 @@ if (value == 127) {
 			}
 			engine.setValue('[Sampler' + (num + 1) + ']', 'cue_gotoandplay', 1);
 		}
-		if (value == 0) {
+		if (value === 0) {
 			
 		}
 		
@@ -601,39 +708,57 @@ CMDDC.plyRow = function (num, a) {
 			}
 }
 
-CMDDC.volume = function (num, value) {
-	if (CMDDC.tmp1 == true) {
-		if (value == 0x41) {
-			var gain = engine.getValue('[Sampler' + (num + 8) + ']', 'pregain') * 100;
-			gain = (gain + 5) / 100
-			engine.setValue('[Sampler' + (num + 8) + ']', 'pregain', gain);
-			CMDDC.chVolumeLed(num, value);
-			return;
-		}
-		if (value == 0x3F) {
-			var gain = engine.getValue('[Sampler' + (num + 8) + ']', 'pregain') * 100;
-			gain = (gain - 5) / 100;
-			engine.setValue('[Sampler' + (num + 8) + ']', 'pregain', gain);
-			CMDDC.chVolumeLed(num, value);
-			return;
-		}
-	}
-
-	if (value == 0x41) {
-		var gain = engine.getValue('[Sampler' + num + ']', 'pregain') * 100;
-		gain = (gain + 5) / 100
-		engine.setValue('[Sampler' + num + ']', 'pregain', gain);
+CMDDC.rtry = function (num, value) {
+	// Pitch (PFL button)
+	if (CMDDC.shift4 === true) {
 		
-		CMDDC.chVolumeLed(num, value);
+		if (engine.getValue('[Sampler' + (num + CMDDC.tmp1) + ']', 'file_bpm') !== 0) {
+			var bpm = Math.round(engine.getValue('[Sampler' + (num + CMDDC.tmp1) + ']', 'bpm'));
+			
+			if (value === 0x41) {
+				bpm = bpm * 1.059;
+				engine.setValue('[Sampler' + (num + CMDDC.tmp1) + ']', 'bpm', bpm);
+				return;
+			}
+			if (value === 0x3F) {
+				bpm = bpm * 0.944
+				if (bpm <= 10) bpm = 10;
+				engine.setValue('[Sampler' + (num + CMDDC.tmp1) + ']', 'bpm', bpm);
+				return;
+			}
+		} else {
+			var pitch = engine.getValue('[Sampler' + (num + CMDDC.tmp1) + ']', 'pitch');
+			
+			if (value === 0x41) {
+				pitch++;
+				engine.setValue('[Sampler' + (num + CMDDC.tmp1) + ']', 'pitch', pitch);
+				return;
+			}
+			if (value === 0x3F) {
+				pitch--;
+				engine.setValue('[Sampler' + (num + CMDDC.tmp1) + ']', 'pitch', pitch);
+				return;
+			}
+		}
+		return;
+	}
+	
+
+	if (value === 0x41) {
+		var gain = engine.getValue('[Sampler' + (num + CMDDC.tmp1) + ']', 'pregain') * 100;
+		gain = (gain + 5) / 100
+		engine.setValue('[Sampler' + (num + CMDDC.tmp1) + ']', 'pregain', gain);
+		
+		if (!CMDDC.tmp1) CMDDC.chVolumeLed(num, value);
 		
 		return;
 	}
-	if (value == 0x3F) {
-		var gain = engine.getValue('[Sampler' + num + ']', 'pregain') * 100;
+	if (value === 0x3F) {
+		var gain = engine.getValue('[Sampler' + (num + CMDDC.tmp1) + ']', 'pregain') * 100;
 		gain = (gain - 5) / 100;
-		engine.setValue('[Sampler' + num + ']', 'pregain', gain);
+		engine.setValue('[Sampler' + (num + CMDDC.tmp1) + ']', 'pregain', gain);
 		
-		CMDDC.chVolumeLed(num, value);
+		if (!CMDDC.tmp1) CMDDC.chVolumeLed(num, value);
 		
 		return;
 	}

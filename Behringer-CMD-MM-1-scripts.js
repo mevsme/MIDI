@@ -1,9 +1,12 @@
 var CMDMM = new Object();
 
 CMDMM.init = function (id) { 
-	CMDMM.faderOrder = [3, 1, 2, 4], // Decks order
-	CMDMM.ctrl = [[], [], [], []]; // Controls for defined deck order
-	CMDMM.deckSequence(CMDMM.faderOrder); // Fill ctrls
+	CMDMM.ch = ['[Microphone]', '[Channel1]', '[Channel2]', '[Auxiliary1]'];
+	
+	CMDMM.emptyConnection = {
+		trigger : function () {return},
+		disconnect : function () {return},
+	}
 	
 	CMDMM.shiftStatus = false;
 	
@@ -13,47 +16,45 @@ CMDMM.init = function (id) {
     CMDMM.paused               = false;  
     CMDMM.timer                = null;
     CMDMM.longpress            = false;  
-    CMDMM.orientation          = [null, [null, false, false], [null, false, false], [null, false, false], [null, false, false]]; // Null for shifting index
+    CMDMM.orientation          = [[null, false, false], [null, false, false], [null, false, false], [null, false, false]]; // Null for shifting index
 	
 	// Special mode
 	// The idea behind this mode is to be able to DJ only with one piece of MM-1.
 	// The button 1 becomes CUE, the button 2 becomes PLAY
-	CMDMM.sm = [0,0]; // 1 - first button pressed, 2 - second, 3 switch mode enabled
+	CMDMM.sm = [0,0]; // 1 - first button pressed, 2 - second, 3 - special mode enabled
 	CMDMM.spMode = false;
 
-    engine.makeConnection('[Master]', 'VuMeterL', CMDMM.vuMeterUpdateL);
-    engine.makeConnection('[Master]', 'VuMeterR', CMDMM.vuMeterUpdateR);
+    uvl = engine.makeConnection('[Master]', 'VuMeterL', CMDMM.vuMeterUpdateL); uvl.trigger();
+    uvr = engine.makeConnection('[Master]', 'VuMeterR', CMDMM.vuMeterUpdateR); uvr.trigger();
     
-    CMDMM.pfl1 = engine.makeConnection('[Channel1]','pfl', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[0][0], value)}); CMDMM.pfl1.trigger();
-    CMDMM.pfl2 = engine.makeConnection('[Channel2]','pfl', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[1][0], value)}); CMDMM.pfl2.trigger();
-    CMDMM.pfl3 = engine.makeConnection('[Channel3]','pfl', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[2][0], value)}); CMDMM.pfl3.trigger();
-    CMDMM.pfl4 = engine.makeConnection('[Channel4]','pfl', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[3][0], value)}); CMDMM.pfl4.trigger();
-     
-    CMDMM.b11 = engine.makeConnection('[EffectRack1_EffectUnit1]', 'group_[Channel1]_enable', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[0][1], value)}); CMDMM.b11.trigger();
-    CMDMM.b12 = engine.makeConnection('[EffectRack1_EffectUnit2]', 'group_[Channel1]_enable', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[0][2], value)}); CMDMM.b12.trigger();
-    CMDMM.b21 = engine.makeConnection('[EffectRack1_EffectUnit1]', 'group_[Channel2]_enable', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[1][1], value)}); CMDMM.b21.trigger();
-    CMDMM.b22 = engine.makeConnection('[EffectRack1_EffectUnit2]', 'group_[Channel2]_enable', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[1][2], value)}); CMDMM.b22.trigger();
-    CMDMM.b31 = engine.makeConnection('[EffectRack1_EffectUnit1]', 'group_[Channel3]_enable', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[2][1], value)}); CMDMM.b31.trigger();
-    CMDMM.b33 = engine.makeConnection('[EffectRack1_EffectUnit2]', 'group_[Channel3]_enable', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[2][2], value)}); CMDMM.b33.trigger();
-    CMDMM.b41 = engine.makeConnection('[EffectRack1_EffectUnit1]', 'group_[Channel4]_enable', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[3][1], value)}); CMDMM.b41.trigger();
-    CMDMM.b44 = engine.makeConnection('[EffectRack1_EffectUnit2]', 'group_[Channel4]_enable', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[3][2], value)}); CMDMM.b44.trigger();
+    CMDMM.pfl0 = engine.makeConnection(CMDMM.ch[0],'pfl', function(value) {midi.sendShortMsg(0x94, 0x30, value)}); CMDMM.pfl0.trigger();
+    CMDMM.pfl1 = engine.makeConnection(CMDMM.ch[1],'pfl', function(value) {midi.sendShortMsg(0x94, 0x31, value)}); CMDMM.pfl1.trigger();
+    CMDMM.pfl2 = engine.makeConnection(CMDMM.ch[2],'pfl', function(value) {midi.sendShortMsg(0x94, 0x32, value)}); CMDMM.pfl2.trigger();
+    CMDMM.pfl3 = engine.makeConnection(CMDMM.ch[3],'pfl', function(value) {midi.sendShortMsg(0x94, 0x33, value)}); CMDMM.pfl3.trigger();
+       
+    CMDMM.b11 = engine.makeConnection('[EffectRack1_EffectUnit1]', 'group_'+CMDMM.ch[0]+'_enable', function(value) {midi.sendShortMsg(0x94, 0x13, value)}); CMDMM.b11.trigger();
+    CMDMM.b12 = engine.makeConnection('[EffectRack1_EffectUnit2]', 'group_'+CMDMM.ch[0]+'_enable', function(value) {midi.sendShortMsg(0x94, 0x14, value)}); CMDMM.b12.trigger();
+    CMDMM.b21 = engine.makeConnection('[EffectRack1_EffectUnit1]', 'group_'+CMDMM.ch[1]+'_enable', function(value) {midi.sendShortMsg(0x94, 0x17, value)}); CMDMM.b21.trigger();
+    CMDMM.b22 = engine.makeConnection('[EffectRack1_EffectUnit2]', 'group_'+CMDMM.ch[1]+'_enable', function(value) {midi.sendShortMsg(0x94, 0x18, value)}); CMDMM.b22.trigger();
+    CMDMM.b31 = engine.makeConnection('[EffectRack1_EffectUnit1]', 'group_'+CMDMM.ch[2]+'_enable', function(value) {midi.sendShortMsg(0x94, 0x1B, value)}); CMDMM.b31.trigger();
+    CMDMM.b32 = engine.makeConnection('[EffectRack1_EffectUnit2]', 'group_'+CMDMM.ch[2]+'_enable', function(value) {midi.sendShortMsg(0x94, 0x1C, value)}); CMDMM.b32.trigger();
+    CMDMM.b41 = engine.makeConnection('[EffectRack1_EffectUnit1]', 'group_'+CMDMM.ch[3]+'_enable', function(value) {midi.sendShortMsg(0x94, 0x1F, value)}); CMDMM.b41.trigger();
+    CMDMM.b42 = engine.makeConnection('[EffectRack1_EffectUnit2]', 'group_'+CMDMM.ch[3]+'_enable', function(value) {midi.sendShortMsg(0x94, 0x20, value)}); CMDMM.b42.trigger();
 	
-	engine.softTakeover('[QuickEffectRack1_[Channel1]]', 'super1', true);
-	engine.softTakeover('[QuickEffectRack1_[Channel2]]', 'super1', true);
-	engine.softTakeover('[QuickEffectRack1_[Channel3]]', 'super1', true);
-	engine.softTakeover('[QuickEffectRack1_[Channel4]]', 'super1', true);
+	engine.softTakeover('[QuickEffectRack1_'+CMDMM.ch[0]+']', 'super1', true);
+	engine.softTakeover('[QuickEffectRack1_'+CMDMM.ch[1]+']', 'super1', true);
+	engine.softTakeover('[QuickEffectRack1_'+CMDMM.ch[2]+']', 'super1', true);
+	engine.softTakeover('[QuickEffectRack1_'+CMDMM.ch[3]+']', 'super1', true);
 	
 	// Ping
 	midi.sendShortMsg(0x94, 0x12, 0x01);
 	
 	// Just in case if fucked-up something xD
-	engine.setValue('[Channel1]', 'rateSearch', 0);
-	engine.setValue('[Channel2]', 'rateSearch', 0);
-	engine.setValue('[Channel3]', 'rateSearch', 0);
-	engine.setValue('[Channel4]', 'rateSearch', 0);
-	engine.setValue('[PreviewDeck1]', 'rateSearch', 0);
-
-	
+	//engine.setValue('[Channel1]', 'rateSearch', 0);
+	//engine.setValue('[Channel2]', 'rateSearch', 0);
+	//engine.setValue('[Channel3]', 'rateSearch', 0);
+	//engine.setValue('[Channel4]', 'rateSearch', 0);
+	//engine.setValue('[PreviewDeck1]', 'rateSearch', 0);
 }
 
 CMDMM.chSM = function (channel, control, value) { // Check SM
@@ -87,23 +88,39 @@ CMDMM.chSM = function (channel, control, value) { // Check SM
 			CMDMM.b21.disconnect(); 
 			CMDMM.b22.disconnect(); 
 			CMDMM.b31.disconnect(); 
-			CMDMM.b33.disconnect(); 
+			CMDMM.b32.disconnect(); 
 			CMDMM.b41.disconnect(); 
-			CMDMM.b44.disconnect(); 
+			CMDMM.b42.disconnect(); 
 			
 			CMDMM.ori1.disconnect();
 			CMDMM.ori2.disconnect();
 			CMDMM.ori3.disconnect();
 			CMDMM.ori4.disconnect();
 			
-			CMDMM.b11 = engine.makeConnection('[Channel1]', 'cue_indicator', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[0][1], value)}); CMDMM.b11.trigger(); 
-			CMDMM.b12 = engine.makeConnection('[Channel1]', 'play',          function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[0][2], value)}); CMDMM.b12.trigger(); 
-			CMDMM.b21 = engine.makeConnection('[Channel2]', 'cue_indicator', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[1][1], value)}); CMDMM.b21.trigger(); 
-			CMDMM.b22 = engine.makeConnection('[Channel2]', 'play',          function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[1][2], value)}); CMDMM.b22.trigger(); 
-			CMDMM.b31 = engine.makeConnection('[Channel3]', 'cue_indicator', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[2][1], value)}); CMDMM.b31.trigger(); 
-			CMDMM.b33 = engine.makeConnection('[Channel3]', 'play',          function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[2][2], value)}); CMDMM.b33.trigger(); 
-			CMDMM.b41 = engine.makeConnection('[Channel4]', 'cue_indicator', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[3][1], value)}); CMDMM.b41.trigger(); 
-			CMDMM.b44 = engine.makeConnection('[Channel4]', 'play',          function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[3][2], value)}); CMDMM.b44.trigger(); 
+			CMDMM.b11 = engine.makeConnection(CMDMM.ch[0], 'cue_indicator', function(value) {midi.sendShortMsg(0x94, 0x13, value)}); 
+			if (typeof CMDMM.b11 === "undefined") CMDMM.b11 = CMDMM.emptyConnection;
+			CMDMM.b11.trigger(); 
+			CMDMM.b12 = engine.makeConnection(CMDMM.ch[0], 'play',          function(value) {midi.sendShortMsg(0x94, 0x14, value)}); 
+			if (typeof CMDMM.b12 === "undefined") CMDMM.b12 = CMDMM.emptyConnection;
+			CMDMM.b12.trigger(); 
+			CMDMM.b21 = engine.makeConnection(CMDMM.ch[1], 'cue_indicator', function(value) {midi.sendShortMsg(0x94, 0x17, value)}); 
+			if (typeof CMDMM.b21 === "undefined") CMDMM.b21 = CMDMM.emptyConnection;
+			CMDMM.b21.trigger(); 
+			CMDMM.b22 = engine.makeConnection(CMDMM.ch[1], 'play',          function(value) {midi.sendShortMsg(0x94, 0x18, value)}); 
+			if (typeof CMDMM.b22 === "undefined") CMDMM.b22 = CMDMM.emptyConnection;
+			CMDMM.b22.trigger(); 
+			CMDMM.b31 = engine.makeConnection(CMDMM.ch[2], 'cue_indicator', function(value) {midi.sendShortMsg(0x94, 0x1B, value)}); 
+			if (typeof CMDMM.b31 === "undefined") CMDMM.b31 = CMDMM.emptyConnection;
+			CMDMM.b31.trigger(); 
+			CMDMM.b32 = engine.makeConnection(CMDMM.ch[2], 'play',          function(value) {midi.sendShortMsg(0x94, 0x1C, value)}); 
+			if (typeof CMDMM.b32 === "undefined") CMDMM.b32 = CMDMM.emptyConnection;
+			CMDMM.b32.trigger(); 
+			CMDMM.b41 = engine.makeConnection(CMDMM.ch[3], 'cue_indicator', function(value) {midi.sendShortMsg(0x94, 0x1F, value)}); 
+			if (typeof CMDMM.b41 === "undefined") CMDMM.b41 = CMDMM.emptyConnection;
+			CMDMM.b41.trigger(); 
+			CMDMM.b42 = engine.makeConnection(CMDMM.ch[3], 'play',          function(value) {midi.sendShortMsg(0x94, 0x20, value)}); 
+			if (typeof CMDMM.b42 === "undefined") CMDMM.b42 = CMDMM.emptyConnection;
+			CMDMM.b42.trigger(); 
 		
 		} else if (CMDMM.spMode) {
 			
@@ -115,34 +132,20 @@ CMDMM.chSM = function (channel, control, value) { // Check SM
 			CMDMM.b21.disconnect(); 
 			CMDMM.b22.disconnect(); 
 			CMDMM.b31.disconnect(); 
-			CMDMM.b33.disconnect(); 
+			CMDMM.b32.disconnect(); 
 			CMDMM.b41.disconnect(); 
-			CMDMM.b44.disconnect(); 
+			CMDMM.b42.disconnect(); 
 			
-			engine.makeConnection('[EffectRack1_EffectUnit1]', 'group_[Channel1]_enable', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[0][1], value)}); CMDMM.b11.trigger();
-			engine.makeConnection('[EffectRack1_EffectUnit2]', 'group_[Channel1]_enable', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[0][2], value)}); CMDMM.b12.trigger();
-			engine.makeConnection('[EffectRack1_EffectUnit1]', 'group_[Channel2]_enable', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[1][1], value)}); CMDMM.b21.trigger();
-			engine.makeConnection('[EffectRack1_EffectUnit2]', 'group_[Channel2]_enable', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[1][2], value)}); CMDMM.b22.trigger();
-			engine.makeConnection('[EffectRack1_EffectUnit1]', 'group_[Channel3]_enable', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[2][1], value)}); CMDMM.b31.trigger();
-			engine.makeConnection('[EffectRack1_EffectUnit2]', 'group_[Channel3]_enable', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[2][2], value)}); CMDMM.b33.trigger();
-			engine.makeConnection('[EffectRack1_EffectUnit1]', 'group_[Channel4]_enable', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[3][1], value)}); CMDMM.b41.trigger();
-			engine.makeConnection('[EffectRack1_EffectUnit2]', 'group_[Channel4]_enable', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[3][2], value)}); CMDMM.b44.trigger();
+			engine.makeConnection('[EffectRack1_EffectUnit1]', 'group_'+CMDMM.ch[0]+'_enable', function(value) {midi.sendShortMsg(0x94, 0x13, value)}); CMDMM.b11.trigger();
+			engine.makeConnection('[EffectRack1_EffectUnit2]', 'group_'+CMDMM.ch[0]+'_enable', function(value) {midi.sendShortMsg(0x94, 0x14, value)}); CMDMM.b12.trigger();
+			engine.makeConnection('[EffectRack1_EffectUnit1]', 'group_'+CMDMM.ch[1]+'_enable', function(value) {midi.sendShortMsg(0x94, 0x17, value)}); CMDMM.b21.trigger();
+			engine.makeConnection('[EffectRack1_EffectUnit2]', 'group_'+CMDMM.ch[1]+'_enable', function(value) {midi.sendShortMsg(0x94, 0x18, value)}); CMDMM.b22.trigger();
+			engine.makeConnection('[EffectRack1_EffectUnit1]', 'group_'+CMDMM.ch[2]+'_enable', function(value) {midi.sendShortMsg(0x94, 0x1B, value)}); CMDMM.b31.trigger();
+			engine.makeConnection('[EffectRack1_EffectUnit2]', 'group_'+CMDMM.ch[2]+'_enable', function(value) {midi.sendShortMsg(0x94, 0x1C, value)}); CMDMM.b32.trigger();
+			engine.makeConnection('[EffectRack1_EffectUnit1]', 'group_'+CMDMM.ch[3]+'_enable', function(value) {midi.sendShortMsg(0x94, 0x1F, value)}); CMDMM.b41.trigger();
+			engine.makeConnection('[EffectRack1_EffectUnit2]', 'group_'+CMDMM.ch[3]+'_enable', function(value) {midi.sendShortMsg(0x94, 0x20, value)}); CMDMM.b42.trigger();
 		}
 	}
-}
-
-CMDMM.deckSequence = function (sequence) {
-    var address = [[0x30, 0x13, 0x14, 0x12, 0x0e, 0x0a, 0x06],
-                   [0x31, 0x17, 0x18, 0x13, 0x0f, 0x0b, 0x07], 
-                   [0x32, 0x1b, 0x1c, 0x14, 0x10, 0x0c, 0x08], 
-                   [0x33, 0x1f, 0x20, 0x15, 0x11, 0x0d, 0x09]];
-	//              [0]   [1]   [2]   [3]   [4]   [5]   [6]
-	//              CUE  1     2     r1    r2    r3    r4                            
-    
-    for (var i = 0; i <= 3; i++) {
-        var z = sequence[i] - 1; 
-        CMDMM.ctrl[z] = address[i];
-    }
 }
 
 CMDMM.vuMeterUpdateL = function (value, group, control) {
@@ -157,25 +160,25 @@ CMDMM.vuMeterUpdateR = function (value, group, control) {
 
 CMDMM.orienLED = function (value, group, control) {
 	switch (group) {
-		case '[Channel1]':
-			if (value == 0) midi.sendShortMsg(0x94, CMDMM.ctrl[0][1], 0x01), midi.sendShortMsg(0x94, CMDMM.ctrl[0][2], 0x00);
-			if (value == 2) midi.sendShortMsg(0x94, CMDMM.ctrl[0][1], 0x00), midi.sendShortMsg(0x94, CMDMM.ctrl[0][2], 0x01);
-			if (value == 1) midi.sendShortMsg(0x94, CMDMM.ctrl[0][1], 0x01), midi.sendShortMsg(0x94, CMDMM.ctrl[0][2], 0x01);
+		case CMDMM.ch[0]:
+			if (value === 0) midi.sendShortMsg(0x94, 0x13, 0x01), midi.sendShortMsg(0x94, 0x14, 0x00);
+			if (value === 2) midi.sendShortMsg(0x94, 0x13, 0x00), midi.sendShortMsg(0x94, 0x14, 0x01);
+			if (value === 1) midi.sendShortMsg(0x94, 0x13, 0x01), midi.sendShortMsg(0x94, 0x14, 0x01);
 		break;
-		case '[Channel2]':
-			if (value == 0) midi.sendShortMsg(0x94, CMDMM.ctrl[1][1], 0x01), midi.sendShortMsg(0x94, CMDMM.ctrl[1][2], 0x00);
-			if (value == 2) midi.sendShortMsg(0x94, CMDMM.ctrl[1][1], 0x00), midi.sendShortMsg(0x94, CMDMM.ctrl[1][2], 0x01);
-			if (value == 1) midi.sendShortMsg(0x94, CMDMM.ctrl[1][1], 0x01), midi.sendShortMsg(0x94, CMDMM.ctrl[1][2], 0x01);
+		case CMDMM.ch[1]:
+			if (value === 0) midi.sendShortMsg(0x94, 0x17, 0x01), midi.sendShortMsg(0x94, 0x18, 0x00);
+			if (value === 2) midi.sendShortMsg(0x94, 0x17, 0x00), midi.sendShortMsg(0x94, 0x18, 0x01);
+			if (value === 1) midi.sendShortMsg(0x94, 0x17, 0x01), midi.sendShortMsg(0x94, 0x18, 0x01);
 		break;
-		case '[Channel3]':
-			if (value == 0) midi.sendShortMsg(0x94, CMDMM.ctrl[2][1], 0x01), midi.sendShortMsg(0x94, CMDMM.ctrl[2][2], 0x00);
-			if (value == 2) midi.sendShortMsg(0x94, CMDMM.ctrl[2][1], 0x00), midi.sendShortMsg(0x94, CMDMM.ctrl[2][2], 0x01);
-			if (value == 1) midi.sendShortMsg(0x94, CMDMM.ctrl[2][1], 0x01), midi.sendShortMsg(0x94, CMDMM.ctrl[2][2], 0x01);
+		case CMDMM.ch[2]:
+			if (value === 0) midi.sendShortMsg(0x94, 0x1B, 0x01), midi.sendShortMsg(0x94, 0x1C, 0x00);
+			if (value === 2) midi.sendShortMsg(0x94, 0x1B, 0x00), midi.sendShortMsg(0x94, 0x1C, 0x01);
+			if (value === 1) midi.sendShortMsg(0x94, 0x1B, 0x01), midi.sendShortMsg(0x94, 0x1C, 0x01);
 		break;
-		case '[Channel4]':
-			if (value == 0) midi.sendShortMsg(0x94, CMDMM.ctrl[3][1], 0x01), midi.sendShortMsg(0x94, CMDMM.ctrl[3][2], 0x00);
-			if (value == 2) midi.sendShortMsg(0x94, CMDMM.ctrl[3][1], 0x00), midi.sendShortMsg(0x94, CMDMM.ctrl[3][2], 0x01);
-			if (value == 1) midi.sendShortMsg(0x94, CMDMM.ctrl[3][1], 0x01), midi.sendShortMsg(0x94, CMDMM.ctrl[3][2], 0x01);
+		case CMDMM.ch[3]:
+			if (value === 0) midi.sendShortMsg(0x94, 0x1F, 0x01), midi.sendShortMsg(0x94, 0x20, 0x00);
+			if (value === 2) midi.sendShortMsg(0x94, 0x1F, 0x00), midi.sendShortMsg(0x94, 0x20, 0x01);
+			if (value === 1) midi.sendShortMsg(0x94, 0x1F, 0x01), midi.sendShortMsg(0x94, 0x20, 0x01);
 		break;
 	}
 }
@@ -191,14 +194,14 @@ CMDMM.shift = function(channel, control, value, status, group) {
 			CMDMM.b21.disconnect();
 			CMDMM.b22.disconnect();
 			CMDMM.b31.disconnect();
-			CMDMM.b33.disconnect();
+			CMDMM.b32.disconnect();
 			CMDMM.b41.disconnect();
-			CMDMM.b44.disconnect();
+			CMDMM.b42.disconnect();
 			 
-			CMDMM.ori1 = engine.makeConnection('[Channel1]', 'orientation', CMDMM.orienLED); CMDMM.ori1.trigger();
-			CMDMM.ori2 = engine.makeConnection('[Channel2]', 'orientation', CMDMM.orienLED); CMDMM.ori2.trigger();
-			CMDMM.ori3 = engine.makeConnection('[Channel3]', 'orientation', CMDMM.orienLED); CMDMM.ori3.trigger();
-			CMDMM.ori4 = engine.makeConnection('[Channel4]', 'orientation', CMDMM.orienLED); CMDMM.ori4.trigger();
+			CMDMM.ori1 = engine.makeConnection(CMDMM.ch[0], 'orientation', CMDMM.orienLED); CMDMM.ori1.trigger();
+			CMDMM.ori2 = engine.makeConnection(CMDMM.ch[1], 'orientation', CMDMM.orienLED); CMDMM.ori2.trigger();
+			CMDMM.ori3 = engine.makeConnection(CMDMM.ch[2], 'orientation', CMDMM.orienLED); CMDMM.ori3.trigger();
+			CMDMM.ori4 = engine.makeConnection(CMDMM.ch[3], 'orientation', CMDMM.orienLED); CMDMM.ori4.trigger();
 		}
 		CMDMM.shiftStatus = true;
 		CMDMM.chSM(channel, control, value);
@@ -219,14 +222,14 @@ CMDMM.shift = function(channel, control, value, status, group) {
 			CMDMM.ori3.disconnect();
 			CMDMM.ori4.disconnect();
 		
-			CMDMM.b11 = engine.makeConnection('[EffectRack1_EffectUnit1]', 'group_[Channel1]_enable', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[0][1], value)}); CMDMM.b11.trigger();
-			CMDMM.b12 = engine.makeConnection('[EffectRack1_EffectUnit2]', 'group_[Channel1]_enable', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[0][2], value)}); CMDMM.b12.trigger();
-			CMDMM.b21 = engine.makeConnection('[EffectRack1_EffectUnit1]', 'group_[Channel2]_enable', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[1][1], value)}); CMDMM.b21.trigger();
-			CMDMM.b22 = engine.makeConnection('[EffectRack1_EffectUnit2]', 'group_[Channel2]_enable', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[1][2], value)}); CMDMM.b22.trigger();
-			CMDMM.b31 = engine.makeConnection('[EffectRack1_EffectUnit1]', 'group_[Channel3]_enable', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[2][1], value)}); CMDMM.b31.trigger();
-			CMDMM.b33 = engine.makeConnection('[EffectRack1_EffectUnit2]', 'group_[Channel3]_enable', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[2][2], value)}); CMDMM.b33.trigger();
-			CMDMM.b41 = engine.makeConnection('[EffectRack1_EffectUnit1]', 'group_[Channel4]_enable', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[3][1], value)}); CMDMM.b41.trigger();
-			CMDMM.b44 = engine.makeConnection('[EffectRack1_EffectUnit2]', 'group_[Channel4]_enable', function(value) {midi.sendShortMsg(0x94, CMDMM.ctrl[3][2], value)}); CMDMM.b44.trigger();
+			CMDMM.b11 = engine.makeConnection('[EffectRack1_EffectUnit1]', 'group_'+CMDMM.ch[0]+'_enable', function(value) {midi.sendShortMsg(0x94, 0x13, value)}); CMDMM.b11.trigger();
+			CMDMM.b12 = engine.makeConnection('[EffectRack1_EffectUnit2]', 'group_'+CMDMM.ch[0]+'_enable', function(value) {midi.sendShortMsg(0x94, 0x14, value)}); CMDMM.b12.trigger();
+			CMDMM.b21 = engine.makeConnection('[EffectRack1_EffectUnit1]', 'group_'+CMDMM.ch[1]+'_enable', function(value) {midi.sendShortMsg(0x94, 0x17, value)}); CMDMM.b21.trigger();
+			CMDMM.b22 = engine.makeConnection('[EffectRack1_EffectUnit2]', 'group_'+CMDMM.ch[1]+'_enable', function(value) {midi.sendShortMsg(0x94, 0x18, value)}); CMDMM.b22.trigger();
+			CMDMM.b31 = engine.makeConnection('[EffectRack1_EffectUnit1]', 'group_'+CMDMM.ch[2]+'_enable', function(value) {midi.sendShortMsg(0x94, 0x1B, value)}); CMDMM.b31.trigger();
+			CMDMM.b32 = engine.makeConnection('[EffectRack1_EffectUnit2]', 'group_'+CMDMM.ch[2]+'_enable', function(value) {midi.sendShortMsg(0x94, 0x1C, value)}); CMDMM.b32.trigger();
+			CMDMM.b41 = engine.makeConnection('[EffectRack1_EffectUnit1]', 'group_'+CMDMM.ch[3]+'_enable', function(value) {midi.sendShortMsg(0x94, 0x1F, value)}); CMDMM.b41.trigger();
+			CMDMM.b42 = engine.makeConnection('[EffectRack1_EffectUnit2]', 'group_'+CMDMM.ch[3]+'_enable', function(value) {midi.sendShortMsg(0x94, 0x20, value)}); CMDMM.b42.trigger();
 		}
 		
 		return;
@@ -323,106 +326,165 @@ CMDMM.fader = function (channel, control, value, status, group) {
     value = script.absoluteLin(value, 0, 1);
 
     switch (control) {
-        case CMDMM.ctrl[0][0]: engine.setParameter('[Channel1]', 'volume', value); break;
-        case CMDMM.ctrl[1][0]: engine.setParameter('[Channel2]', 'volume', value); break;
-        case CMDMM.ctrl[2][0]: engine.setParameter('[Channel3]', 'volume', value); break;
-        case CMDMM.ctrl[3][0]: engine.setParameter('[Channel4]', 'volume', value); break;
+        case 0x30: engine.setParameter(CMDMM.ch[0], 'volume', value); break;
+        case 0x31: engine.setParameter(CMDMM.ch[1], 'volume', value); break;
+        case 0x32: engine.setParameter(CMDMM.ch[2], 'volume', value); break;
+        case 0x33: engine.setParameter(CMDMM.ch[3], 'volume', value); break;
         
-        case CMDMM.ctrl[0][6]: if (CMDMM.shiftStatus) {engine.setParameter('[Channel1]', 'pregain', value);} else {engine.setParameter('[EqualizerRack1_[Channel1]_Effect1]', 'parameter3', value)}; break; 
-        case CMDMM.ctrl[1][6]: if (CMDMM.shiftStatus) {engine.setParameter('[Channel2]', 'pregain', value);} else {engine.setParameter('[EqualizerRack1_[Channel2]_Effect1]', 'parameter3', value)}; break; 
-        case CMDMM.ctrl[2][6]: if (CMDMM.shiftStatus) {engine.setParameter('[Channel3]', 'pregain', value);} else {engine.setParameter('[EqualizerRack1_[Channel3]_Effect1]', 'parameter3', value)}; break; 
-        case CMDMM.ctrl[3][6]: if (CMDMM.shiftStatus) {engine.setParameter('[Channel4]', 'pregain', value);} else {engine.setParameter('[EqualizerRack1_[Channel4]_Effect1]', 'parameter3', value)}; break; 
+        case 0x06: if (CMDMM.shiftStatus) {engine.setParameter(CMDMM.ch[0], 'pregain', value);} else {engine.setParameter('[EqualizerRack1_'+CMDMM.ch[0]+'_Effect1]', 'parameter3', value)}; break; 
+        case 0x07: if (CMDMM.shiftStatus) {engine.setParameter(CMDMM.ch[1], 'pregain', value);} else {engine.setParameter('[EqualizerRack1_'+CMDMM.ch[1]+'_Effect1]', 'parameter3', value)}; break; 
+        case 0x08: if (CMDMM.shiftStatus) {engine.setParameter(CMDMM.ch[2], 'pregain', value);} else {engine.setParameter('[EqualizerRack1_'+CMDMM.ch[2]+'_Effect1]', 'parameter3', value)}; break; 
+        case 0x09: if (CMDMM.shiftStatus) {engine.setParameter(CMDMM.ch[3], 'pregain', value);} else {engine.setParameter('[EqualizerRack1_'+CMDMM.ch[3]+'_Effect1]', 'parameter3', value)}; break; 
         
-        case CMDMM.ctrl[0][5]: engine.setParameter('[EqualizerRack1_[Channel1]_Effect1]', 'parameter2', value); break;    
-        case CMDMM.ctrl[1][5]: engine.setParameter('[EqualizerRack1_[Channel2]_Effect1]', 'parameter2', value); break;    
-        case CMDMM.ctrl[2][5]: engine.setParameter('[EqualizerRack1_[Channel3]_Effect1]', 'parameter2', value); break;    
-        case CMDMM.ctrl[3][5]: engine.setParameter('[EqualizerRack1_[Channel4]_Effect1]', 'parameter2', value); break; 
+        case 0x0a: engine.setParameter('[EqualizerRack1_'+CMDMM.ch[0]+'_Effect1]', 'parameter2', value); break;    
+        case 0x0b: engine.setParameter('[EqualizerRack1_'+CMDMM.ch[1]+'_Effect1]', 'parameter2', value); break;    
+        case 0x0c: engine.setParameter('[EqualizerRack1_'+CMDMM.ch[2]+'_Effect1]', 'parameter2', value); break;    
+        case 0x0d: engine.setParameter('[EqualizerRack1_'+CMDMM.ch[3]+'_Effect1]', 'parameter2', value); break; 
             
-        case CMDMM.ctrl[0][4]: engine.setParameter('[EqualizerRack1_[Channel1]_Effect1]', 'parameter1', value); break;     
-        case CMDMM.ctrl[1][4]: engine.setParameter('[EqualizerRack1_[Channel2]_Effect1]', 'parameter1', value); break;     
-        case CMDMM.ctrl[2][4]: engine.setParameter('[EqualizerRack1_[Channel3]_Effect1]', 'parameter1', value); break;     
-        case CMDMM.ctrl[3][4]: engine.setParameter('[EqualizerRack1_[Channel4]_Effect1]', 'parameter1', value); break;    
+        case 0x0e: engine.setParameter('[EqualizerRack1_'+CMDMM.ch[0]+'_Effect1]', 'parameter1', value); break;     
+        case 0x0f: engine.setParameter('[EqualizerRack1_'+CMDMM.ch[1]+'_Effect1]', 'parameter1', value); break;     
+        case 0x10: engine.setParameter('[EqualizerRack1_'+CMDMM.ch[2]+'_Effect1]', 'parameter1', value); break;     
+        case 0x11: engine.setParameter('[EqualizerRack1_'+CMDMM.ch[3]+'_Effect1]', 'parameter1', value); break;    
         
-        case CMDMM.ctrl[0][3]: engine.setParameter('[QuickEffectRack1_[Channel1]]', 'super1', value); break;     
-        case CMDMM.ctrl[1][3]: engine.setParameter('[QuickEffectRack1_[Channel2]]', 'super1', value); break;      
-        case CMDMM.ctrl[2][3]: engine.setParameter('[QuickEffectRack1_[Channel3]]', 'super1', value); break;        
-        case CMDMM.ctrl[3][3]: engine.setParameter('[QuickEffectRack1_[Channel4]]', 'super1', value); break;   
+        case 0x12: 
+			if (engine.getValue('[EffectRack1_EffectUnit1]', 'group_'+CMDMM.ch[0]+'_enable')) {
+				engine.setParameter('[EffectRack1_EffectUnit1]', 'super1', value);
+				break;
+			}
+			if (engine.getValue('[EffectRack1_EffectUnit2]', 'group_'+CMDMM.ch[0]+'_enable')) {
+				engine.setParameter('[EffectRack1_EffectUnit2]', 'super1', value);
+				break;
+			}
+			engine.setParameter('[QuickEffectRack1_'+CMDMM.ch[0]+']', 'super1', value);
+		break; 
+		
+		break;     
+        case 0x13: 
+			if (engine.getValue('[EffectRack1_EffectUnit1]', 'group_'+CMDMM.ch[1]+'_enable')) {
+				engine.setParameter('[EffectRack1_EffectUnit1]', 'super1', value);
+				break;
+			}
+			if (engine.getValue('[EffectRack1_EffectUnit2]', 'group_'+CMDMM.ch[1]+'_enable')) {
+				engine.setParameter('[EffectRack1_EffectUnit2]', 'super1', value);
+				break;
+			}
+			engine.setParameter('[QuickEffectRack1_'+CMDMM.ch[1]+']', 'super1', value);
+			
+		break;   
+		
+        case 0x14: 
+			if (engine.getValue('[EffectRack1_EffectUnit1]', 'group_'+CMDMM.ch[2]+'_enable')) {
+				engine.setParameter('[EffectRack1_EffectUnit1]', 'super1', value);
+				break;
+			}
+			if (engine.getValue('[EffectRack1_EffectUnit2]', 'group_'+CMDMM.ch[2]+'_enable')) {
+				engine.setParameter('[EffectRack1_EffectUnit2]', 'super1', value);
+				break;
+			}
+			engine.setParameter('[QuickEffectRack1_'+CMDMM.ch[2]+']', 'super1', value);
+		break; 
+		
+        case 0x15: 
+			if (engine.getValue('[EffectRack1_EffectUnit1]', 'group_'+CMDMM.ch[3]+'_enable')) {
+				engine.setParameter('[EffectRack1_EffectUnit1]', 'super1', value);
+				break;
+			}
+			if (engine.getValue('[EffectRack1_EffectUnit2]', 'group_'+CMDMM.ch[3]+'_enable')) {
+				engine.setParameter('[EffectRack1_EffectUnit2]', 'super1', value);
+				break;
+			}
+			engine.setParameter('[QuickEffectRack1_'+CMDMM.ch[3]+']', 'super1', value);
+		break;  
     }
 }
 
 CMDMM.button = function (channel, control, value, status, group) {
     switch (control) {
         //CUE deck 127/0
-        case CMDMM.ctrl[0][0]:
-			CMDMM.cue(1, value);
+        case 0x30:
+			CMDMM.cue(0, value);
         break;
 			
-        case CMDMM.ctrl[1][0]:
+        case 0x31:
+			CMDMM.cue(1, value);
+		break;
+		
+        case 0x32:
 			CMDMM.cue(2, value);
 		break;
 		
-        case CMDMM.ctrl[2][0]:
+        case 0x33:
 			CMDMM.cue(3, value);
-		break;
-		
-        case CMDMM.ctrl[3][0]:
-			CMDMM.cue(4, value);
 		break;
             
         //1-2 
-        case CMDMM.ctrl[0][1]:
+        case 0x13:
+			CMDMM.oneTwo(0, 1, value);
+        break;
+			
+        case 0x14:
+			CMDMM.oneTwo(0, 2, value);
+        break;
+		
+		case 0x17:
 			CMDMM.oneTwo(1, 1, value);
         break;
 			
-        case CMDMM.ctrl[0][2]:
+        case 0x18:
 			CMDMM.oneTwo(1, 2, value);
         break;
 		
-		case CMDMM.ctrl[1][1]:
+        case 0x1B:
 			CMDMM.oneTwo(2, 1, value);
         break;
 			
-        case CMDMM.ctrl[1][2]:
+        case 0x1C:
 			CMDMM.oneTwo(2, 2, value);
         break;
 		
-        case CMDMM.ctrl[2][1]:
+        case 0x1F:
 			CMDMM.oneTwo(3, 1, value);
         break;
 			
-        case CMDMM.ctrl[2][2]:
+        case 0x20:
 			CMDMM.oneTwo(3, 2, value);
-        break;
-		
-        case CMDMM.ctrl[3][1]:
-			CMDMM.oneTwo(4, 1, value);
-        break;
-			
-        case CMDMM.ctrl[3][2]:
-			CMDMM.oneTwo(4, 2, value);
         break;
     }
 }
 
 CMDMM.cue = function (deck, value) {
-	if (value == 127) {
+	if (value === 127) {
 		if (CMDMM.shiftStatus) {
 			if (CMDMM.spMode) {
-				engine.setValue('[Channel' + deck + ']', 'beatsync', 1);
-				midi.sendShortMsg(0x94, CMDMM.ctrl[(deck-1)][0], 0x01);
+				engine.setValue(CMDMM.ch[deck], 'beatsync', 1);
+				midi.sendShortMsg(0x94, (0x30 + deck), 0x01);
 			}
 			
 			// Nothing for SHIFT
 		} else {
-			script.toggleControl('[Channel' + deck + ']', 'pfl');
+			script.toggleControl(CMDMM.ch[deck], 'pfl');
+			if (engine.getValue(CMDMM.ch[deck], 'pfl')) {
+				
+				uvl.disconnect();
+				uvr.disconnect();
+				uvl = engine.makeConnection(CMDMM.ch[deck], 'VuMeterL', CMDMM.vuMeterUpdateL); uvl.trigger();
+				uvr = engine.makeConnection(CMDMM.ch[deck], 'VuMeterR', CMDMM.vuMeterUpdateR); uvr.trigger();
+			} else {
+				uvl.disconnect();
+				uvr.disconnect();
+				uvl = engine.makeConnection('[Master]', 'VuMeterL', CMDMM.vuMeterUpdateL); uvl.trigger();
+				uvr = engine.makeConnection('[Master]', 'VuMeterR', CMDMM.vuMeterUpdateR); uvr.trigger();
+			}
 		}
 		
+		
+		
 	}
-	if (value == 0) {
+	if (value === 0) {
 		if (CMDMM.shiftStatus) {
 			if (CMDMM.spMode) {
-				engine.setValue('[Channel' + deck + ']', 'beatsync', 0);
-				midi.sendShortMsg(0x94, CMDMM.ctrl[(deck-1)][0], 0x00);
+				engine.setValue(CMDMM.ch[deck], 'beatsync', 0);
+				midi.sendShortMsg(0x94, (0x30 + deck), 0x00);
 				var name = 'pfl' + deck;
 				CMDMM[name].trigger(); // LED
 				return;
@@ -443,24 +505,24 @@ CMDMM.oneTwo = function (deck, button, value) {
 			if (CMDMM.spMode) {
 				switch (button) {
 					case 1: 
-						engine.setValue('[Channel' + deck + ']', 'rateSearch', -2); 
-						CMDMM.timer = engine.beginTimer(1500, function () {engine.setValue('[Channel' + deck + ']', 'rateSearch', -20);}, true);
+						engine.setValue(CMDMM.ch[deck], 'rateSearch', -2); 
+						CMDMM.timer = engine.beginTimer(1500, function () {engine.setValue(CMDMM.ch[deck], 'rateSearch', -20);}, true);
 						break;
 					case 2: 
-						engine.setValue('[Channel' + deck + ']', 'rateSearch', 2); 
-						CMDMM.timer = engine.beginTimer(1500, function () {engine.setValue('[Channel' + deck + ']', 'rateSearch', 20);}, true);
+						engine.setValue(CMDMM.ch[deck], 'rateSearch', 2); 
+						CMDMM.timer = engine.beginTimer(1500, function () {engine.setValue(CMDMM.ch[deck], 'rateSearch', 20);}, true);
 						break;
 				}
 				return;
 			}
 			
 			switch (button) {
-				case 1: engine.setValue('[Channel' + deck + ']', 'orientation', 0); break;
-				case 2: engine.setValue('[Channel' + deck + ']', 'orientation', 2); break;
+				case 1: engine.setValue(CMDMM.ch[deck], 'orientation', 0); break;
+				case 2: engine.setValue(CMDMM.ch[deck], 'orientation', 2); break;
 			}
 			
 			if (CMDMM.orientation[deck][1] === true && CMDMM.orientation[deck][2] === true) {
-				engine.setValue('[Channel' + deck + ']', 'orientation', 1);
+				engine.setValue(CMDMM.ch[deck], 'orientation', 1);
 			}
 			
 			return;
@@ -469,13 +531,15 @@ CMDMM.oneTwo = function (deck, button, value) {
 		
 		if (CMDMM.spMode) {
 			switch (button) {
-				case 1: engine.setValue('[Channel' + deck + ']', 'cue_default', 1); break;
-				case 2: script.toggleControl('[Channel' + deck + ']', 'play'); break;
+				case 1: engine.setValue(CMDMM.ch[deck], 'cue_default', 1); break;
+				case 2: script.toggleControl(CMDMM.ch[deck], 'play'); break;
 			}
 			
 			return;
 		}
-		script.toggleControl('[EffectRack1_EffectUnit' + button + ']', 'group_[Channel' + deck + ']_enable', value);
+		
+		//
+		script.toggleControl('[EffectRack1_EffectUnit' + button + ']', 'group_'+CMDMM.ch[deck]+'_enable', value);
 		return;
 	}
 	
@@ -486,13 +550,13 @@ CMDMM.oneTwo = function (deck, button, value) {
 		if (CMDMM.shiftStatus) {
 			if (CMDMM.spMode) {
 				if (CMDMM.timer) engine.stopTimer(CMDMM.timer);
-				engine.setValue('[Channel' + deck + ']', 'rateSearch', 0);
+				engine.setValue(CMDMM.ch[deck], 'rateSearch', 0);
 				return;
 			}
 		}
 		if (CMDMM.spMode) {
 			switch (button) {
-				case 1: engine.setValue('[Channel' + deck + ']', 'cue_default', 0); break;
+				case 1: engine.setValue(CMDMM.ch[deck], 'cue_default', 0); break;
 			}
 		}
 	}

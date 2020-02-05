@@ -1,18 +1,5 @@
 var CMDPL = new Object();
 
-//0x90, 0x91 0x92 0x93 - channels LEDs, rotary red light
-//0xA0 - rotary doesn't have channels
-//TODO: changeDeck to cGroup 
-//Dokuwiki глянути чи є спойлер і внести дані про Скпатч що там інт
-//Запиляти змінні і функції що запам'ятовуються значення лампочок крутілок//
-//TODO перевірки на від'ємні локації для hot cue
-//ЕЩВЩ перевірку на пітч, щоб не опускалось нуля
-//TODO groupto deck good idea внести в статтю про бес практики
-// є баг з першим скретчом
-//key init into globals and run through 'for'
-//винести фактори в глобальні
-//пофіксити прикол з джогом
-
 CMDPL.init = function (id) {
 	
 	CMDPL.shift = [false, false, false, false];
@@ -27,12 +14,15 @@ CMDPL.init = function (id) {
 	CMDPL.syncTimer;
 	CMDPL.syncLongPress = false;
 	
-	CMDPL.permaScratch = [false, false, false, false, ];
+	CMDPL.fader        = [false, false, false, false];
+	CMDPL.permaScratch = [false, false, false, false];
 	CMDPL.rpm = 33+1/8;
 	CMDPL.alpha = 1/2;
 	CMDPL.beta  = CMDPL.alpha/32;
 	
-	CMDPL.invertJogs = false;
+	
+	
+	CMDPL.invertJogs = true;
 	
 	CMDPL.specialMODE = [false, false, false, false];
 	
@@ -86,7 +76,9 @@ CMDPL.init = function (id) {
 		engine.makeConnection(CMDPL.chList[i], 'slip_enabled',        function (value, group, control) {midi.sendShortMsg(0x90 + CMDPL.getChannelN(group), 0x21, value);}).trigger();
 		
 		engine.makeConnection(CMDPL.chList[i], 'scratch2_enable',     function (value, group, control) {midi.sendShortMsg(0x90 + CMDPL.getChannelN(group), 0x1B, value);}).trigger();
-    } 
+    
+		engine.softTakeover(CMDPL.chList[i], 'rate', true);
+	} 
 	
 	// Ping
 	midi.sendShortMsg(0x90, 0x18, 0x01);
@@ -98,6 +90,8 @@ CMDPL.init = function (id) {
 	//engine.softTakeover('[Channel2]', 'rate', true);
 	//engine.softTakeover('[Channel3]', 'rate', true);
 	//engine.softTakeover('[Channel4]', 'rate', true);
+	
+	
 }
 
 CMDPL.super1red = function (value, group, control) {
@@ -241,7 +235,6 @@ CMDPL.button = function (channel, control, value, status, group) {
 				}
 				
 				if (engine.getValue(CMDPL.chList[channel], 'loop_enabled')) {
-					print("HERE");
 					engine.setValue(CMDPL.chList[channel], 'reloop_toggle', 1);
 				} else engine.setValue(CMDPL.chList[channel], 'beatloop_activate', 1);
 				
@@ -489,6 +482,7 @@ CMDPL.button = function (channel, control, value, status, group) {
         break; 
 
         case 0x1B: 
+		/*
 			var ch = channel + 1;
 			if (value === 127) {
 				if (CMDPL.permaScratch[channel] === true) {
@@ -500,6 +494,21 @@ CMDPL.button = function (channel, control, value, status, group) {
 				}
 				
 			}
+		*/
+			if (value === 127) {
+				CMDPL.fader[channel] = !CMDPL.fader[channel];
+				if (CMDPL.fader[channel] === true) {
+					engine.setValue("[Mixer Profile]", "xFaderMode", 0);
+					engine.setValue("[Mixer Profile]", "xFaderCalibration", 0.9);
+					engine.setValue("[Mixer Profile]", "xFaderCurve", 7.0);
+					break;
+				} else {
+					engine.setValue("[Mixer Profile]", "xFaderMode", 0);
+					engine.setValue("[Mixer Profile]", "xFaderCalibration", 0.4);
+					engine.setValue("[Mixer Profile]", "xFaderCurve", 0.9);
+				}
+			}
+		
 		break;
 
         case 0x1F:
@@ -754,6 +763,7 @@ CMDPL.rotary = function (channel, control, value, status, group) {
 
 
 CMDPL.fader = function (channel, control, value, status, group) {
+	engine.softTakeover(CMDPL.chList[channel], 'rate', true);
 	engine.setValue(CMDPL.chList[channel], 'rate', script.midiPitch(control, value, status));
 }
 
